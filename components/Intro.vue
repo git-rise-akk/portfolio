@@ -1,10 +1,10 @@
 <template>
-  <div class="Intro" :class="{ hidden : introShow}">
+  <div class="Intro" :class="{ hidden : introHide}">
     <div class="photos"></div>
     <div class="filter"></div>
     <div class="content">
       <div class="name">Ольга Сычева</div>
-<!--      <div class="subtitle">девочка с голосом<br />«как из кино»</div>-->
+      <div class="subtitle">девочка с голосом<br />«как из кино»</div>
       <div class="loading"><span>{{ loadingPercentage }} %</span></div>
     </div>
   </div>
@@ -12,27 +12,35 @@
 
 <script>
   export default {
-    // props: {
-    //   introShow: {
-    //     type: Boolean,
-    //     default: false,
-    //   },
-    // },
+    props: {
+      videoLoaded: {
+        type: Boolean,
+        default: false,
+      },
+    },
     data() {
       return {
         loadingPercentage: 0,
-        introShow: false,
+        introHide: false,
+        timeLoading: this.videoLoaded ? 45 : 70,
+        clearTimeout: '',
       }
     },
     watch: {
       loadingPercentage: {
         handler(value) {
           if (value !== 100) {
-            setTimeout(() => {
-              this.loadingPercentage += 1;
-            }, 50);
+            if(!this.videoLoaded && this.loadingPercentage === 98) {
+              this.clearTimeout.clearTimeout();
+            } else {
+              this.clearTimeout = setTimeout(() => {
+                this.loadingPercentage += 1;
+              }, this.timeLoading);
+            }
+
           } else {
-            this.introShow = true;
+            this.introHide = true;
+            this.$emit('playVideo');
           }
         },
         immediate: true,
@@ -53,6 +61,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  //@include anim(.8s, transform);
   transition: transform .8s ease-in-out;
   .photos {
     position: absolute;

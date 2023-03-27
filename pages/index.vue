@@ -1,30 +1,36 @@
 <template>
-  <video ref="homeVideo" class="homeVideo" src="/video/index.mp4" poster="/images/home/preview_video.jpg" loop autoplay muted></video>
-  <intro />
+  <video ref="video" class="video" :src="srcVideo" poster="/images/home/preview_video.jpg" playsinline loop muted></video>
+  <intro
+      :video-loaded="videoLoaded"
+      @playVideo="this.$refs.video.play()"
+  />
 </template>
 
 <script>
 export default {
   data() {
     return {
-      introHide: false
+      videoLoaded: false,
+      srcVideo: '',
     }
   },
   mounted() {
-    // this.$refs.homeVideo.oncanplaythrough = () => {
-    //   console.log('Загрузилось');
-    //   this.introHide = true;
-    // }
-
-    // setTimeout(() => {
-    //   this.introHide = true;
-    // }, 500);
+    this.$refs.video.addEventListener('canplay', this.canplayEvent);
+    this.srcVideo = '/video/index.mp4';
   },
+  beforeUnmount() {
+    this.$refs.video.removeEventListener('canplay', this.canplayEvent);
+  },
+  methods: {
+    canplayEvent() {
+      this.videoLoaded = true;
+    },
+  }
 }
 </script>
 
 <style lang="scss">
-  .homeVideo {
+  .video {
     position: absolute;
     width: 100%;
     height: 100%;
