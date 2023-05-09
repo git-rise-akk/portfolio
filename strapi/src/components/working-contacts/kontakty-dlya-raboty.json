@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_working_contacts_kontakty_dlya_raboty",
+  "info": {
+    "displayName": "Контакты для работы",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    }
+  }
+}

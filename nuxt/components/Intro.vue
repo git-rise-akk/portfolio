@@ -1,6 +1,6 @@
 <template>
   <div class="Intro" :class="{ hidden : introHide}">
-    <div class="photos"  :style="{ backgroundImage: 'url(' + imageSrc + ')'}"></div>
+    <div class="photos" :style="{ backgroundImage: 'url(' + imageSrc + ')'}"></div>
     <div class="filter"></div>
     <div class="content">
       <div class="name">Ольга Сычева</div>
@@ -19,7 +19,7 @@
   });
   const emit = defineEmits(['playVideo']);
 
-  const  config = useRuntimeConfig();
+  const config = useRuntimeConfig();
   const loadingPercentage = ref(0);
   const introHide = ref(false);
   let timeLoading = 45;
@@ -64,10 +64,6 @@
 </script>
 
 <style lang="scss">
-pre {
-  font-size: 1.5rem;
-  color: #000000;
-}
 .Intro {
   position: absolute;
   left: 0;
@@ -77,7 +73,7 @@ pre {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 3;
+  z-index: 4;
   transition: transform 1s cubic-bezier(0.65, 0.05, 0.36, 1);
   .photos {
     position: absolute;
@@ -85,16 +81,10 @@ pre {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url("/images/intro/intro.jpg");
     background-repeat: no-repeat;
     background-size: cover;
   }
   .filter {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     background: rgba(0, 0, 0, 0.45);
   }
   .content {

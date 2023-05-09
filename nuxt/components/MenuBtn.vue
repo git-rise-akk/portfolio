@@ -1,5 +1,5 @@
 <template>
-  <div class="MenuBtn">
+  <div class="MenuBtn" :class="{ 'MenuBtn--close': store.menuOpened }" @click="store.menuOpened = !store.menuOpened">
     <div class="lines">
       <div class="line line--top"></div>
       <div class="line line--bottom"></div>
@@ -7,13 +7,12 @@
   </div>
 </template>
 
-<script>
-export default {
-  // name: "MenuBtn"
-}
+<script setup>
+  import { useMenuStore } from '@/stores/menu';
+  const store = useMenuStore();
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .MenuBtn {
   width: 10rem;
   height: 10rem;
@@ -21,7 +20,7 @@ export default {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 1;
+  z-index: 3;
   .lines {
       position: relative;
       height: 1.8rem;
@@ -29,20 +28,29 @@ export default {
       .line {
         position: absolute;
         top: 0;
-        left: 0;
         width: 6rem;
         height: 3px;
         background: #fff;
-        transition: width .3s;
+        transition: transform 0.3s ease-in, top 0.5s ease-out 0.3s;
         &.line--bottom {
           top: initial;
           bottom: 0;
+          transition: transform 0.3s ease-in, bottom 0.3s ease-out 0.3s;
         }
       }
   }
-  &:hover {
-    .line--bottom {
-      width: 5rem;
+  &.MenuBtn--close {
+    .lines {
+      .line--top {
+        top: 50%;
+        transform: translateY(-50%) rotate(45deg);
+        transition: top 0.3s ease-out , transform 0.3s ease-in 0.3s;
+      }
+      .line--bottom {
+        bottom: 50%;
+        transform: translateY(25%) rotate(-45deg);
+        transition: bottom 0.3s ease-out , transform 0.3s ease-in 0.3s;
+      }
     }
   }
 }

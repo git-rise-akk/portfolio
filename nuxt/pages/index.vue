@@ -1,19 +1,27 @@
 <template>
-  <div class="filter"></div>
-  <video ref="video" class="video" :src="srcVideo" poster="/images/home/preview_video.jpg" playsinline loop muted></video>
-<!--  <div>{{ homeData.data.attributes.aboutText }}</div>-->
-  <intro
-      :video-loaded="videoLoaded"
-      @playVideo="video.play()"
+  <intro v-if="!store.hideIntro"
+         :video-loaded="videoLoaded"
+         @playVideo="callbackEndIntro"
   />
+  <div class="filter"></div>
+  <video ref="video" class="video" :src="srcVideo" poster="/images/home/preview_video.jpg" playsinline loop muted :autoplay="showAttrAutoplay"></video>
+<!--  <div>{{ homeData.data.attributes.aboutText }}</div>-->
 </template>
 
 <script setup>
+  import { useIntroStore } from '@/stores/intro';
+
+  const store = useIntroStore();
   const  config = useRuntimeConfig();
   const video = ref(null);
+  const hideIntro = ref(true);
   const srcVideo = ref('');
   const { data: homeData } = await useFetch(`${config.API_URL}/api/glavnaya-stranicza`);
   let videoLoaded = ref(false);
+
+  const showAttrAutoplay = computed(() => {
+    return store.hideIntro ? 'autoplay' : 'no';
+  });
 
   function canplayEvent() {
         videoLoaded.value = true;
@@ -27,18 +35,14 @@
   onBeforeUnmount(() => {
     video.value.addEventListener('canplay', canplayEvent());
   });
+
+  const callbackEndIntro = () => {
+    video.value.play();
+    setTimeout(() => { store.hideIntro = true }, 1100);
+  }
 </script>
 
 <style lang="scss">
-  .filter {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    background: rgba(0, 0, 0, 0.25);
-  }
   .video {
     position: absolute;
     width: 100%;

@@ -1,3 +1,3 @@
 <template>
-  <h1>Poster</h1>
+  <h1 class="title">Афиша</h1>
 </template>

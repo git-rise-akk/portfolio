@@ -1,3 +1,3 @@
 <template>
-  <h1>Photos</h1>
+  <h1 class="title">Фото</h1>
 </template>
