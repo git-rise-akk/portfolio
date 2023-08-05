@@ -1,0 +1,31 @@
+{
+  "kind": "singleType",
+  "collectionName": "afishas",
+  "info": {
+    "singularName": "afisha",
+    "pluralName": "afishas",
+    "displayName": "Афиша"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "image": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false,
+      "required": true
+    },
+    "poetryEvenings": {
+      "type": "component",
+      "repeatable": true,
+      "component": "poetry-evenings.poeticheskie-vechera"
+    }
+  }
+}

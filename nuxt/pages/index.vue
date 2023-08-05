@@ -12,12 +12,14 @@
   import { useIntroStore } from '@/stores/intro';
 
   const store = useIntroStore();
-  const  config = useRuntimeConfig();
+  const config = useRuntimeConfig();
   const video = ref(null);
   const hideIntro = ref(true);
   const srcVideo = ref('');
   const { data: homeData } = await useFetch(`${config.API_URL}/api/glavnaya-stranicza`);
   let videoLoaded = ref(false);
+  const route = useRoute();
+  // const nuxtContext = useContext()
 
   const showAttrAutoplay = computed(() => {
     return store.hideIntro ? 'autoplay' : 'no';
@@ -30,6 +32,10 @@
   onMounted(() => {
     video.value.addEventListener('canplay', canplayEvent());
     srcVideo.value = '/video/index.mp4';
+     // store.hideIntro = !!$nuxt.value.context.from;
+    // route.beforeEach((to, from) => {
+    //   console.log(to, from);
+    // });
   });
 
   onBeforeUnmount(() => {

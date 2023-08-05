@@ -41,7 +41,7 @@
       }, timeLoading.value);
     } else  {
       emit('playVideo');
-      introHide.value = true;
+      introHi  = true;
       stopWatchEffect();
     }
   },

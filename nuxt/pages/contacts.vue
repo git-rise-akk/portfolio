@@ -1,5 +1,5 @@
 <template>
-  <div class="contacts">
+  <div class="page contacts">
     <template-page
         :filterOpacity="0.5"
         :bgImage="imageSrc"

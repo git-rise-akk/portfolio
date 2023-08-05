@@ -34,4 +34,16 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Oks-Free';
+  src: url('/assets/fonts/Oks-Free.eot');
+  src: url('/assets/fonts/Oks-Free.eot') format('embedded-opentype'),
+  url('/assets/fonts/Oks-Free.woff2') format('woff2'),
+  url('/assets/fonts/Oks-Free.woff') format('woff'),
+  url('/assets/fonts/Oks-Free.ttf') format('truetype'),
+  url('/assets/fonts/Oks-Free.svg#Oks-Free') format('svg');
+  font-weight: 400;
+  font-style: normal;
+}
+
 

@@ -82,3 +82,13 @@ h1 {
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+.page {
+  width: 100vw;
+  height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  scrollbar-width: thin;
+}
