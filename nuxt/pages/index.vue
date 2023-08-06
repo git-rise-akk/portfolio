@@ -1,7 +1,7 @@
 <template>
-  <intro v-if="!store.hideIntro"
-         :video-loaded="videoLoaded"
-         @playVideo="callbackEndIntro"
+  <intro
+    :video-loaded="videoLoaded"
+    @playVideo="callbackEndIntro"
   />
   <div class="filter"></div>
   <video ref="video" class="video" :src="srcVideo" poster="/images/home/preview_video.jpg" playsinline loop muted :autoplay="showAttrAutoplay"></video>

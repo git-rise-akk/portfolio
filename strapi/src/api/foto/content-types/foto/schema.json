@@ -1,10 +1,10 @@
 {
   "kind": "singleType",
-  "collectionName": "afishas",
+  "collectionName": "fotos",
   "info": {
-    "singularName": "afisha",
-    "pluralName": "afishas",
-    "displayName": "Афиша",
+    "singularName": "foto",
+    "pluralName": "fotos",
+    "displayName": "Фото",
     "description": ""
   },
   "options": {
@@ -12,18 +12,19 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "poetryEvenings": {
+    "albums": {
+      "displayName": "Альбомы",
       "type": "component",
       "repeatable": true,
-      "component": "poetry-evenings.poeticheskie-vechera"
+      "component": "albums.albomy"
     },
     "image": {
-      "allowedTypes": [
-        "images"
-      ],
       "type": "media",
       "multiple": false,
-      "required": true
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }

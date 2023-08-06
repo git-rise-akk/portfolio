@@ -1,7 +1,6 @@
 <template>
   <LocomotiveScroll
       ref="scroller"
-      id="app"
       :getted-options="{
       smooth: true,
       direction: 'vertical',

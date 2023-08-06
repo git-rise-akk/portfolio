@@ -7,6 +7,7 @@
     >
       <ul class="events">
         <a v-for="(event, index) in contactsData.data.attributes.poetryEvenings"
+           :key="`event-${index}`"
            class="event"
            :href="event.link"
            target="_blank"

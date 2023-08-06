@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_videos_video",
+  "info": {
+    "displayName": "Видео"
+  },
+  "options": {},
+  "attributes": {
+    "preview": {
+      "allowedTypes": [
+        "images",
+        "videos"
+      ],
+      "type": "media",
+      "multiple": false,
+      "required": true
+    },
+    "video": {
+      "allowedTypes": [
+        "videos"
+      ],
+      "type": "media",
+      "multiple": false,
+      "required": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

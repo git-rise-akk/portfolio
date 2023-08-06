@@ -11,9 +11,4 @@ export default defineNuxtConfig({
             API_URL: process.env.API_URL,
         },
     },
-    vue: {
-        compilerOptions: {
-            isCustomElement: (tag:string) => ['locomotive-scroll'].includes(tag),
-        },
-    },
 })

@@ -3,7 +3,7 @@
     <div class="photos" :style="{ backgroundImage: 'url(' + imageSrc + ')'}"></div>
     <div class="filter"></div>
     <div class="content">
-      <div class="name">Ольга Сычева</div>
+      <div ref="name" class="name">Ольга Сычева</div>
       <div class="subtitle">девочка с голосом<br />«как из кино»</div>
       <div class="loading"><span>{{ loadingPercentage }} %</span></div>
     </div>
@@ -11,6 +11,9 @@
 </template>
 
 <script setup>
+  // анимация текста
+  import { toggleLetters } from '@/mixins/globalMixin.js';
+  // const name = ref();
   const props = defineProps({
     videoLoaded: {
       type: Boolean,
@@ -41,12 +44,20 @@
       }, timeLoading.value);
     } else  {
       emit('playVideo');
-      introHi  = true;
+      introHide.value  = true;
       stopWatchEffect();
     }
   },
 {flush: 'post'}
   );
+
+  // анимация текста
+  // onMounted(() => {
+  //   const page_title = new toggleLetters({
+  //     duration: 500,
+  //     frame: name.value
+  //   })
+  // });
 
   // if (value !== 100) {
   //   if(!this.videoLoaded && this.loadingPercentage === 98) {

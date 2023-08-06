@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_albums_albomy",
+  "info": {
+    "displayName": "Альбомы"
+  },
+  "options": {},
+  "attributes": {
+    "preview": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false,
+      "required": true
+    },
+    "date": {
+      "type": "string",
+      "required": true
+    },
+    "city": {
+      "type": "string",
+      "required": true
+    },
+    "photos": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": true,
+      "required": true
+    }
+  }
+}
