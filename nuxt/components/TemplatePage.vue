@@ -1,6 +1,7 @@
 <template>
   <div class="filter" :style="{ background: `rgba(0, 0, 0, ${filterOpacity})`}"></div>
-  <div class="bg-image" :style="{ backgroundImage: 'url(' + bgImage + ')'}"></div>
+  <div v-if="bgImage" class="bg-image" :style="{ backgroundImage: 'url(' + bgImage + ')'}"></div>
+  <video v-if="bgVideo" class="bg-video" :src="bgVideo[0]" :poster="bgVideo[1]" playsinline loop muted autoplay></video>
   <scroll>
     <h1 class="title">{{ titlePage }}</h1>
     <div class="content">
@@ -18,7 +19,11 @@ export default {
     },
     bgImage: {
       type: String,
-      default: '/images/intro/intro.jpg'
+      default: undefined
+    },
+    bgVideo: {
+      type: Array,
+      default: undefined
     },
     titlePage: {
       type: String,
@@ -55,10 +60,18 @@ export default {
     background-size: cover;
     background-position: center;
   }
+  .bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
   .content {
     position: relative;
     z-index: 1;
-    overflow-y: scroll;
-    overflow: hidden;
+    //overflow-y: scroll;
+    //overflow: hidden;
   }
 </style>

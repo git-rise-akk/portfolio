@@ -1,5 +1,11 @@
 <template>
-  <div class="MenuBtn" :class="{ 'MenuBtn--close': store.menuOpened }" @click="store.menuOpened = !store.menuOpened">
+  <div
+    class="MenuBtn"
+    :class="{ 'MenuBtn--close': store.menuOpened }"
+    @click="store.menuOpened = !store.menuOpened"
+    @mouseenter="updateCursorState('CustomCursor--big', '')"
+    @mouseleave="updateCursorState('', '')"
+  >
     <div class="lines">
       <div class="line line--top"></div>
       <div class="line line--bottom"></div>
@@ -9,7 +15,13 @@
 
 <script setup>
   import { useMenuStore } from '@/stores/menu';
+  import { changesCursorState } from '@/stores/Cursor';
   const store = useMenuStore();
+  const storeCursor = changesCursorState();
+  const updateCursorState = (newClass, text) => {
+    storeCursor.toggleClass = newClass;
+    storeCursor.text = text;
+  };
 </script>
 
 <style lang="scss" scoped>
@@ -22,22 +34,22 @@
   cursor: pointer;
   z-index: 3;
   .lines {
-      position: relative;
-      height: 1.8rem;
+    position: relative;
+    height: 1.8rem;
+    width: 6rem;
+    .line {
+      position: absolute;
+      top: 0;
       width: 6rem;
-      .line {
-        position: absolute;
-        top: 0;
-        width: 6rem;
-        height: 3px;
-        background: #fff;
-        transition: transform 0.3s ease-in, top 0.5s ease-out 0.3s;
-        &.line--bottom {
-          top: initial;
-          bottom: 0;
-          transition: transform 0.3s ease-in, bottom 0.3s ease-out 0.3s;
-        }
+      height: 3px;
+      background: #fff;
+      transition: transform 0.3s ease-in, top 0.5s ease-out 0.3s;
+      &.line--bottom {
+        top: initial;
+        bottom: 0;
+        transition: transform 0.3s ease-in, bottom 0.3s ease-out 0.3s;
       }
+    }
   }
   &.MenuBtn--close {
     .lines {

@@ -1,6 +1,7 @@
 <template>
   <LocomotiveScroll
       ref="scroller"
+      id="app"
       :getted-options="{
       smooth: true,
       direction: 'vertical',
@@ -128,7 +129,7 @@ export default {}
 
 
   .example-big-image{
-    img{
+    img {
       width: 100%;
       width: 50vw;
       height: auto;

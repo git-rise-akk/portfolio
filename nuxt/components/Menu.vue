@@ -1,27 +1,30 @@
 <template>
   <div class="Menu" :class="{ 'Menu--open': store.menuOpened }">
     <div class="close"></div>
-    <div class="Menu__left">
-      <div class="social-media">
-        <a v-for="(value, index) in socialMedia"
-           class="social-media__link"
-           :href="value.href"
-           target="_blank"
+    <div class="Menu__wrapper">
+      <div class="Menu__left">
+        <div class="social-media">
+          <a v-for="(value, index) in socialMedia"
+             class="social-media__link"
+             :href="value.href"
+             target="_blank"
+          >
+            {{ value.title }}
+          </a>
+        </div>
+      </div>
+      <div class="Menu__right">
+        <NuxtLink
+            v-for="(value, index) in menuItems"
+            :key="index"
+            :to="value.href"
+            :target="value.title === 'Медитации' ? '_blank' : ''"
+            class="menu-item"
+            @click="store.menuOpened = !store.menuOpened;"
         >
           {{ value.title }}
-        </a>
+        </NuxtLink>
       </div>
-    </div>
-    <div class="Menu__right">
-      <NuxtLink
-          v-for="(value, index) in menuItems"
-          :key="index"
-          :to="value.href"
-          class="menu-item"
-          @click="store.menuOpened = !store.menuOpened;"
-      >
-      {{ value.title }}
-      </NuxtLink>
     </div>
   </div>
 </template>
@@ -35,7 +38,7 @@
         title: 'Обо мне',
       },
       {
-        href: 'https://osychewa.ru/',
+        href: 'https://osychewa.ru/meditations',
         title: 'Медитации',
       },
       {
@@ -43,7 +46,7 @@
         title: 'Афиша',
       },
       {
-        href: '/video',
+        href: '/videos',
         title: 'Видео',
       },
       {
@@ -82,35 +85,110 @@
   left: 0;
   width: 100%;
   height: 100%;
-  padding: 32rem 0 0 39.4rem;
   background-color: #004236;
   display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 2;
   transform: translateY(-100%);
   transition: transform .8s cubic-bezier(0.65, 0.05, 0.36, 1);
   &.Menu--open {
     transform: translateY(0);
-  }
-  .Menu__left {
-    font-family: 'Gilroy-Bold', Arial, Helvetica, sans-serif;
-    font-size: 2.8rem;
-    width: 41.3rem;
-    .social-media__link {
-      margin-bottom: 1.1rem;
-      display: block;
-      &:last-child {
-        margin-bottom: 0;
+    .Menu__wrapper {
+      .Menu__right .menu-item {
+        opacity: 1;
+        transform: translateY(0);
+        //@for $i from 1 through 6 {
+        //  &:nth-child(#{$i}) {
+        //    transition-delay: #{.01s + .05s * $i};
+        //  }
+        //}
+      }
+      .Menu__left .social-media__link {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
   }
-  .Menu__right {
-    font-family: 'Sverdlovsk', Arial, Helvetica, sans-serif;
-    font-size: 8.6rem;
-    .menu-item {
-      display: block;
-      margin-bottom: 2.1rem;
-      &:last-child {
-        margin-bottom: 0;
+  .Menu__wrapper {
+    display: flex;
+    margin-right: 41.3rem;
+    .Menu__left {
+      font-family: 'Gilroy-Bold', Arial, Helvetica, sans-serif;
+      font-size: 2.8rem;
+      width: 41.3rem;
+      .social-media__link {
+        position: relative;
+        width: fit-content;
+        margin-bottom: 1.1rem;
+        display: block;
+        opacity: 0;
+        transform: translateY(10rem);
+        transition: opacity .5s, transform .4s;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        @for $i from 1 through 6 {
+          &:nth-child(#{$i}) {
+            transition-delay: #{.4s + .05s * $i};
+          }
+        }
+        &:hover {
+          &:after  {
+            width: 100%;
+          }
+        }
+        &:after {
+          content: '';
+          position: absolute;
+          background: #fff;
+          height: 1px;
+          width: 0;
+          left: 0;
+          bottom: -5px;
+          transition: width .7s;
+        }
+      }
+    }
+    .Menu__right {
+      font-family: 'Sverdlovsk', Arial, Helvetica, sans-serif;
+      font-size: 8.6rem;
+      .menu-item {
+        position: relative;
+        display: block;
+        width: fit-content;
+        margin-bottom: 2.1rem;
+        opacity: 0;
+        transform: translateY(10rem);
+        transition: opacity .5s, transform .4s;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        @for $i from 1 through 6 {
+          &:nth-child(#{$i}) {
+            transition-delay: #{.4s + .05s * $i};
+          }
+        }
+        &:hover {
+          &:after  {
+            width: 100%;
+          }
+        }
+        &:after {
+          content: '';
+          position: absolute;
+          background: #fff;
+          height: 1px;
+          width: 0;
+          left: 0;
+          bottom: -5px;
+          transition: width .7s;
+        }
+        &.router-link-active {
+          &:after  {
+            width: 100%;
+          }
+        }
       }
     }
   }

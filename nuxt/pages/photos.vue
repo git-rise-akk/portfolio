@@ -1,16 +1,20 @@
 <template>
   <div class="page photos">
     <template-page
-        :filterOpacity="0.55"
-        :bgImage="imageSrc"
-        :titlePage="'Фото'"
+      :filterOpacity="0.55"
+      :bgImage="imageSrc"
+      :titlePage="'Фото'"
     >
       <ul class="albums">
         <li v-for="(album, index) in photosData.data.attributes.albums"
            :key="`album-${index}`"
            class="album"
+           @click="openPopup = !openPopup"
+           @mouseenter="updateCursorState('CustomCursor--big', 'смотреть')"
+           @mouseleave="updateCursorState('', '')"
         >
           <div class="album__cover" :class="{'album__cover--min': shouldAddClass(index) || index === 0}" >
+            <div class="shadow"></div>
             <img class="preview" :src="createsPathImage(index)" />
             <div class="cover-filter"></div>
           </div>
@@ -19,11 +23,20 @@
         </li>
       </ul>
     </template-page>
+    <transition appear name="popup-fade">
+      <PopupGallery
+          @closePopup="openPopup = !openPopup"
+          v-if="openPopup"
+      />
+    </transition>
   </div>
 </template>
 
 <script setup>
+  import { changesCursorState } from '@/stores/Cursor';
+  const store = changesCursorState();
   const  config = useRuntimeConfig();
+  const openPopup = ref(false);
   const { data: photosData } = await useFetch(`${config.API_URL}/api/foto?populate=*`);
   const { data: previewData } = await useFetch(`${config.API_URL}/api/foto?populate[albums][populate]=*`);
   const imageSrc = computed(() => {
@@ -35,10 +48,29 @@
   const createsPathImage = (index) => {
     return config.API_URL + previewData.value.data.attributes.albums[index].preview.data.attributes.url;
   }
+
+  const updateCursorState = (newClass, text) => {
+    store.toggleClass = newClass;
+    store.text = text;
+  };
 </script>
 
 <style lang="scss">
 .photos {
+  .popup-fade-enter-active,
+  .popup-fade-leave-active {
+    @include anim(.3s, opacity);
+  }
+
+  //.popup-fade-leave-active {
+  //  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+  //}
+
+  .popup-fade-enter-from,
+  .popup-fade-leave-to {
+    //transform: translateX(20px);
+    opacity: 0;
+  }
   .filter {
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
@@ -73,6 +105,15 @@
           width: 100%;
           height: 38.5rem;
           overflow: hidden;
+          .shadow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            box-shadow: 0 0 3rem 1.5rem rgba(0, 0, 0, 0.25);
+          }
           &--min {
             height: 36rem;
             margin-top: 2.5rem;

@@ -4,26 +4,25 @@
   "info": {
     "singularName": "video",
     "pluralName": "videos",
-    "displayName": "Видео"
+    "displayName": "Видео",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
-    "image": {
-      "allowedTypes": [
-        "images"
-      ],
-      "type": "media",
-      "multiple": false,
-      "required": true
-    },
     "videos": {
       "displayName": "Видео",
       "type": "component",
       "repeatable": true,
       "component": "videos.video"
+    },
+    "backgroundVideo": {
+      "displayName": "Видео фон",
+      "type": "component",
+      "repeatable": false,
+      "component": "background-video.video-fon"
     }
   }
 }

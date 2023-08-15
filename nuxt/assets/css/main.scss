@@ -1,6 +1,4 @@
 @import 'fonts';
-@import 'mixins';
-@import 'colors';
 
 * {
   margin: 0;
@@ -19,7 +17,7 @@ body {
   font-size: calc(var(--index) * 5);
   font-family: 'Gilroy-Regular', Arial, Helvetica, sans-serif;
   color: #fff;
-  background-color: #004236;
+  background-color: $main;
 }
 
 li {

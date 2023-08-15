@@ -16,6 +16,7 @@
   "dependencies": {
     "@pinia/nuxt": "^0.4.9",
     "locomotive-scroll": "^4.1.4",
+    "nuxt-icons": "^3.2.1",
     "pinia": "^2.0.35",
     "sass": "^1.59.3",
     "sass-loader": "^13.2.1"

@@ -8,10 +8,12 @@
       <div class="parts">
         <div class="part part--one">
           <div class="social-media">
-            <a v-for="(socialItem, index) in contactsData.data.attributes.socialNetwork"
-               class="social-media__link"
-               :href="socialItem.link"
-               target="_blank"
+            <a
+             v-for="(socialItem, index) in contactsData.data.attributes.socialNetwork"
+             :key="`social-media_${index}`"
+             class="social-media__link"
+             :href="socialItem.link"
+             target="_blank"
             >
               {{ socialItem.title }}
             </a>
@@ -19,7 +21,11 @@
         </div>
         <div class="part part--two">
           <div class="working-contacts">
-            <div class="working-contacts__item" v-for="(contact, index) in contactsData.data.attributes.workingContacts">
+            <div
+                class="working-contacts__item"
+                v-for="(contact, index) in contactsData.data.attributes.workingContacts"
+                :key="`working-contacts__item_${index}`"
+            >
               <div class="working-contacts__item-title">{{ contact.title }}</div>
               <a class="working-contacts__item-link" :href="`mailto:${contact.email}`">{{ contact.email }}</a>
             </div>
@@ -52,10 +58,27 @@
           font-weight: bold;
           margin-right: 19.7rem;
           a {
+            position: relative;
             display: block;
             margin-bottom: 2rem;
+            width: fit-content;
             &:last-child {
               margin-bottom: 0;
+            }
+            &:hover {
+              &:after {
+                width: 100%;
+              }
+            }
+            &:after {
+              content: '';
+              position: absolute;
+              background: #fff;
+              height: 1px;
+              width: 0;
+              left: 0;
+              bottom: -3px;
+              @include anim(.7s, width);
             }
           }
         }
@@ -72,8 +95,25 @@
               margin-bottom: 2.3rem;
             }
             .working-contacts__item-link {
+              position: relative;
+              width: fit-content;
               font-family: 'Gilroy-Regular', Arial, Helvetica, sans-serif;
               font-size: 3.2rem;
+              &:hover {
+                &:after {
+                  width: 100%;
+                }
+              }
+              &:after {
+                content: '';
+                position: absolute;
+                background: #fff;
+                height: 1px;
+                width: 0;
+                left: 0;
+                bottom: -3px;
+                @include anim(.7s, width);
+              }
             }
           }
         }

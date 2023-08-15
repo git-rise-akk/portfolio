@@ -4,9 +4,9 @@
     <MenuBtn />
     <Menu />
     <Logo />
+    <CustomCursor />
   </div>
 </template>
-
 
 <style lang="scss">
 .MenuBtn {
@@ -20,3 +20,6 @@
   left: 8.3rem;
 }
 </style>
+<script setup lang="ts">
+import CustomCursor from "~/components/CustomCursor.vue";
+</script>

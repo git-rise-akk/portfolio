@@ -11,6 +11,8 @@
            class="event"
            :href="event.link"
            target="_blank"
+           @mouseenter="updateCursorState('CustomCursor--big', 'купить<br />билет')"
+           @mouseleave="updateCursorState('', '')"
         >
           <div class="event__item event__item--date"><div v-html="wrapsSpan(event.date)"></div></div>
           <div class="event__item event__item--time">{{ event.time }}</div>
@@ -23,6 +25,8 @@
 </template>
 
 <script setup>
+  import { changesCursorState } from '@/stores/Cursor';
+  const store = changesCursorState();
   const  config = useRuntimeConfig();
   const { data: contactsData } = await useFetch(`${config.API_URL}/api/afisha?populate=*`);
 
@@ -32,6 +36,13 @@
 
   const wrapsSpan = ((text) => {
     return text.replace(/^(.{3})(\w{2})/, "$1<span>$2</span>");
+  });
+  const updateCursorState = (newClass, text) => {
+    store.toggleClass = newClass;
+    store.text = text;
+  };
+  onBeforeUnmount(() => {
+    updateCursorState('', '');
   });
 </script>
 
