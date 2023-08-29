@@ -34,6 +34,14 @@
     "aboutText": {
       "type": "richtext",
       "required": true
+    },
+    "aboutImages": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": true,
+      "required": true
     }
   }
 }

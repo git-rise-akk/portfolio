@@ -6,36 +6,48 @@
         :titlePage="'Афиша'"
     >
       <ul class="events">
-        <a v-for="(event, index) in contactsData.data.attributes.poetryEvenings"
-           :key="`event-${index}`"
-           class="event"
-           :href="event.link"
-           target="_blank"
-           @mouseenter="updateCursorState('CustomCursor--big', 'купить<br />билет')"
-           @mouseleave="updateCursorState('', '')"
-        >
-          <div class="event__item event__item--date"><div v-html="wrapsSpan(event.date)"></div></div>
-          <div class="event__item event__item--time">{{ event.time }}</div>
-          <div class="event__item event__item--city">{{ event.city }}</div>
-          <div class="event__item event__item--place"><div>{{ event.place }}</div></div>
-        </a>
+        <template
+          v-for="(event, index) in posterData.data.attributes.poetryEvenings"
+          :key="`event-${index}`">
+          <a
+              class="event"
+              :href="event.link"
+              target="_blank"
+              @mouseenter="updateCursorState('CustomCursor--big', 'купить<br />билет')"
+              @mouseleave="updateCursorState('', '')"
+          >
+            <div class="event__item event__item--date"><div v-html="wrapsSpan(event.date)"></div></div>
+            <div class="event__item event__item--time">{{ event.time }}</div>
+            <div class="event__item event__item--city">{{ event.city }}</div>
+            <div class="event__item event__item--place"><div>{{ event.place }}</div></div>
+          </a>
+        </template>
       </ul>
     </template-page>
   </div>
 </template>
 
 <script setup>
+  // ля скрытия спекиалей, оторые прошли
+  // v-if="Number(event.date.split('/')[1]) > month && Number(event.date.split('/')[0]) > day"
   import { changesCursorState } from '@/stores/Cursor';
   const store = changesCursorState();
   const  config = useRuntimeConfig();
-  const { data: contactsData } = await useFetch(`${config.API_URL}/api/afisha?populate=*`);
+  const { data: posterData } = await useFetch(`${config.API_URL}/api/afisha?populate=*`);
+  const date = new Date();
+  const month = date.getMonth();
+  const day = date.getDate();
 
   const imageSrc = computed(() => {
-    return config.API_URL + contactsData.value.data.attributes.image.data.attributes.url;
+    return config.API_URL + posterData.value.data.attributes.image.data.attributes.url;
   });
 
   const wrapsSpan = ((text) => {
     return text.replace(/^(.{3})(\w{2})/, "$1<span>$2</span>");
+  });
+
+  const removesSymbol = ((date) => {
+    return Number(date.replace('/', ''));
   });
   const updateCursorState = (newClass, text) => {
     store.toggleClass = newClass;

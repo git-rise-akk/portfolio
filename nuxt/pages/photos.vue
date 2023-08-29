@@ -1,17 +1,17 @@
 <template>
   <div class="page photos">
     <template-page
-      :filterOpacity="0.55"
-      :bgImage="imageSrc"
-      :titlePage="'Фото'"
+        :filterOpacity="0.55"
+        :bgImage="imageSrc"
+        :titlePage="'Фото'"
     >
       <ul class="albums">
         <li v-for="(album, index) in photosData.data.attributes.albums"
-           :key="`album-${index}`"
-           class="album"
-           @click="openPopup = !openPopup"
-           @mouseenter="updateCursorState('CustomCursor--big', 'смотреть')"
-           @mouseleave="updateCursorState('', '')"
+            :key="`album-${index}`"
+            class="album"
+            @click="evenOpenPopup(index)"
+            @mouseenter="updateCursorState('CustomCursor--big', 'смотреть')"
+            @mouseleave="updateCursorState('', '')"
         >
           <div class="album__cover" :class="{'album__cover--min': shouldAddClass(index) || index === 0}" >
             <div class="shadow"></div>
@@ -27,6 +27,7 @@
       <PopupGallery
           @closePopup="openPopup = !openPopup"
           v-if="openPopup"
+          :photos="photosGallery"
       />
     </transition>
   </div>
@@ -35,20 +36,34 @@
 <script setup>
   import { changesCursorState } from '@/stores/Cursor';
   const store = changesCursorState();
-  const  config = useRuntimeConfig();
+  const config = useRuntimeConfig();
   const openPopup = ref(false);
+  const photosGallery= ref([]);
   const { data: photosData } = await useFetch(`${config.API_URL}/api/foto?populate=*`);
-  const { data: previewData } = await useFetch(`${config.API_URL}/api/foto?populate[albums][populate]=*`);
+  const { data: albumData } = await useFetch(`${config.API_URL}/api/foto?populate[albums][populate]=*`);
   const imageSrc = computed(() => {
     return config.API_URL + photosData.value.data.attributes.image.data.attributes.url;
   });
   const shouldAddClass = (index) => {
     return index > 0 && ((index - 1) % 4 === 2 || (index - 1) % 4 === 3);
   }
+
   const createsPathImage = (index) => {
-    return config.API_URL + previewData.value.data.attributes.albums[index].preview.data.attributes.url;
+    return config.API_URL + albumData.value.data.attributes.albums[index].preview.data.attributes.url;
   }
 
+  const createsArrayPhotos = (index) => {
+    photosGallery.value = [];
+    (albumData.value.data.attributes.albums[index].photos.data).forEach((item, index) => {
+      photosGallery.value.push(config.API_URL + item.attributes.url);
+    })
+  };
+
+  const evenOpenPopup = (index) => {
+    openPopup.value = !openPopup.value
+    createsArrayPhotos(index);
+    store.small = true;
+  }
   const updateCursorState = (newClass, text) => {
     store.toggleClass = newClass;
     store.text = text;
@@ -59,16 +74,11 @@
 .photos {
   .popup-fade-enter-active,
   .popup-fade-leave-active {
-    @include anim(.3s, opacity);
+    @include anim(.7s, opacity, transform);
   }
-
-  //.popup-fade-leave-active {
-  //  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
-  //}
-
   .popup-fade-enter-from,
   .popup-fade-leave-to {
-    //transform: translateX(20px);
+    transform: scale(.9);
     opacity: 0;
   }
   .filter {

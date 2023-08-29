@@ -26,6 +26,17 @@
     "title": {
       "type": "string",
       "required": true
+    },
+    "link": {
+      "type": "string",
+      "required": true
+    },
+    "previewPopup": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
     }
   }
 }

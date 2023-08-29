@@ -4,16 +4,14 @@
     <div class="filter"></div>
     <div class="content">
       <div ref="name" class="name">Ольга Сычева</div>
-      <div class="subtitle">девочка с голосом<br />«как из кино»</div>
+      <div ref="subtitle" class="subtitle">девочка с голосом<br />«как из кино»</div>
       <div class="loading"><span>{{ loadingPercentage }} %</span></div>
     </div>
   </div>
 </template>
 
 <script setup>
-  // анимация текста
   import { toggleLetters } from '@/mixins/globalMixin.js';
-  // const name = ref();
   const props = defineProps({
     videoLoaded: {
       type: Boolean,
@@ -21,21 +19,43 @@
     }
   });
   const emit = defineEmits(['playVideo']);
-
   const config = useRuntimeConfig();
+  const { data: introData } = await useFetch(`${config.API_URL}/api/intro?populate=*`);
   const loadingPercentage = ref(0);
   const introHide = ref(false);
-  let timeLoading = 45;
+  const timeLoading = ref(1000);
+  const name = ref(null);
+  const subtitle = ref(null);
+  const page_title = ref(null);
+  const page_text = ref(null);
 
   setTimeout(() => {
-    timeLoading =  props.videoLoaded ? timeLoading : 70;
+    timeLoading.value =  props.videoLoaded ? timeLoading.value : 70;
   }, 0);
-
-  const { data: introData } = await useFetch(`${config.API_URL}/api/intro?populate=*`);
 
   const imageSrc = computed(() => {
     return config.API_URL + introData.value.data.attributes.image.data.attributes.url;
   });
+
+  onMounted(() => {
+    page_title.value = new toggleLetters({
+      duration: 1000,
+      delay: 100,
+      frame: name.value,
+    })
+
+    page_text.value = new toggleLetters({
+      duration: 1000,
+      frame: subtitle.value,
+    });
+
+  });
+
+  setTimeout(() => {
+    page_title.value?.toggle(true, function() {
+      page_text.value?.toggle(true);
+    });
+  }, 100);
 
   let stopWatchEffect = watchEffect(() => {
     if (loadingPercentage.value !== 100) {
@@ -50,14 +70,6 @@
   },
 {flush: 'post'}
   );
-
-  // анимация текста
-  // onMounted(() => {
-  //   const page_title = new toggleLetters({
-  //     duration: 500,
-  //     frame: name.value
-  //   })
-  // });
 
   // if (value !== 100) {
   //   if(!this.videoLoaded && this.loadingPercentage === 98) {

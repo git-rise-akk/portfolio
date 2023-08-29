@@ -1,29 +1,30 @@
 <template>
-  <intro
-    v-if="!store.hideIntro"
-    :video-loaded="videoLoaded"
-    @playVideo="callbackEndIntro"
-  />
-  <section
-    class="section"
-    @mouseenter="updateCursorState('CustomCursor--big', 'звук')"
-    @click="switchesSound()"
-  >
-    <div class="filter"></div>
-    <video ref="video" class="video" :src="srcVideo" poster="/images/home/preview_video.jpg" playsinline loop muted :autoplay="showAttrAutoplay"></video>
-  </section>
-<!--  <div>{{ homeData.data.attributes.aboutText }}</div>-->
-  <section class="section section--about">
-    <div class="filter-about"></div>
-    <h1 class="title">Обо мне</h1>
-    <div class="content">
-      <div class="content__left" v-html="homeData.data.attributes.aboutText"></div>
-      <div class="content__right">
-        <img src="/images/home/preview_video.jpg" alt="photo">
-        <img src="/images/home/preview_video.jpg" alt="photo">
+  <div>
+    <intro
+        v-if="!store.hideIntro"
+        :video-loaded="videoLoaded"
+        @playVideo="callbackEndIntro"
+    />
+    <section
+        class="section"
+        @mouseenter="updateCursorState('CustomCursor--big', 'звук')"
+        @click="switchesSound()"
+    >
+      <div class="filter"></div>
+      <video ref="video" class="video" :src="srcVideo" poster="/images/home/preview_video.jpg" playsinline loop muted :autoplay="showAttrAutoplay"></video>
+    </section>
+    <section class="section section--about">
+      <div class="filter-about"></div>
+      <h1 class="title">Обо мне</h1>
+      <div class="content">
+        <div class="content__left" v-html="formattedText(homeData.data.attributes.aboutText)"></div>
+        <div class="content__right">
+          <img class="about-images-one" :src="createsPathImage(0)" alt="photo">
+          <img class="about-images-two" :src="createsPathImage(1)" alt="photo">
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </template>
 
 <script setup>
@@ -39,14 +40,21 @@
   let videoLoaded = ref(false);
   const route = useRoute();
   const soundOn = ref(false);
-  // const nuxtContext = useContext()
 
   const showAttrAutoplay = computed(() => {
     return store.hideIntro ? 'autoplay' : 'no';
   });
 
   function canplayEvent() {
-        videoLoaded.value = true;
+      videoLoaded.value = true;
+  }
+
+  const formattedText = (text) => {
+    return text.replace(/\n/g, '<br>');
+  };
+
+  const createsPathImage = (index) => {
+    return config.API_URL + homeData.value.data.attributes.aboutImages.data[index].attributes.url;
   }
 
   onMounted(() => {
@@ -64,7 +72,9 @@
   });
 
   const callbackEndIntro = () => {
-    video.value.play();
+    if (video.value) {
+      video.value.play();
+    }
     setTimeout(() => { store.hideIntro = true }, 1100);
   }
 
@@ -77,13 +87,14 @@
     soundOn.value = !soundOn.value;
     if(soundOn.value) {
       video.value.muted = false;
-      updateCursorState('CustomCursor--big CustomCursor--click-on-value', 'без звука')
+      storeCursor.small = true;
+      updateCursorState('CustomCursor--big', 'без звука')
     } else {
       video.value.muted = true;
-      updateCursorState('CustomCursor--big CustomCursor--click-off-value', 'звук')
+      storeCursor.small = true;
+      updateCursorState('CustomCursor--big', 'звук')
     }
   }
-
 </script>
 
 <style lang="scss">
@@ -102,6 +113,7 @@
       top: 100%;
       display: none;
       transform: translateY(-100%);
+      @include anim(1s, transform);
       .filter-about {
         position: absolute;
         top: 0;
@@ -118,8 +130,32 @@
         position: relative;
         margin-left: 8.3rem;
         display: flex;
+        justify-content: space-between;
         z-index: 1;
         font-size: 2.8rem;
+        &__left {
+          width: 40%;
+        }
+        &__right {
+          position: relative;
+          width: 49%;
+          img {
+            width: auto;
+          }
+          .about-images-one {
+            position: absolute;
+            top: 34.5rem;
+            left: 0;
+            height: 39.2rem;
+            z-index: 1;
+          }
+          .about-images-two {
+            position: absolute;
+            top: -9.3rem;
+            left: 23.6rem;
+            height: 92.5rem;
+          }
+        }
       }
       img {
         width: 10rem;

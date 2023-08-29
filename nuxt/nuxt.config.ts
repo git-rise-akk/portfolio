@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     modules: [
         '@pinia/nuxt',
         'nuxt-icons',
+        '@nuxt/image',
     ],
     runtimeConfig: {
         public: {
@@ -25,5 +26,8 @@ export default defineNuxtConfig({
         compilerOptions: {
             isCustomElement: (tag:string) => ['LocomotiveScroll'].includes(tag),
         },
+    },
+    app: {
+        pageTransition: { name: 'page'}
     },
 })

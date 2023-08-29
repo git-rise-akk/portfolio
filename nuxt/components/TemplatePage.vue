@@ -3,16 +3,17 @@
   <div v-if="bgImage" class="bg-image" :style="{ backgroundImage: 'url(' + bgImage + ')'}"></div>
   <video v-if="bgVideo" class="bg-video" :src="bgVideo[0]" :poster="bgVideo[1]" playsinline loop muted autoplay></video>
   <scroll>
-    <h1 class="title">{{ titlePage }}</h1>
+    <h1 ref="title" class="title">{{ titlePage }}</h1>
     <div class="content">
       <slot></slot>
     </div>
   </scroll>
 </template>
 
-<script>
-export default {
-  props: {
+<script setup>
+  import { toggleLetters } from '@/mixins/globalMixin.js';
+  const title = ref(null);
+  const props = defineProps({
     filterOpacity: {
       type: Number,
       default: 0.25
@@ -29,8 +30,17 @@ export default {
       type: String,
       default: 'Название раздела'
     }
-  },
-}
+  });
+  let page_title;
+  onMounted(() => {
+    page_title = new toggleLetters({
+      duration: 500,
+      frame: title.value,
+    })
+  });
+  setTimeout(() => {
+    page_title.toggle(true);
+  }, 500);
 </script>
 
 <style lang="scss" scoped>

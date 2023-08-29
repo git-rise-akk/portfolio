@@ -2,7 +2,7 @@
   <div
     class="MenuBtn"
     :class="{ 'MenuBtn--close': store.menuOpened }"
-    @click="store.menuOpened = !store.menuOpened"
+    @click="store.menuOpened = !store.menuOpened,  storeCursor.small = true"
     @mouseenter="updateCursorState('CustomCursor--big', '')"
     @mouseleave="updateCursorState('', '')"
   >

@@ -1,15 +1,16 @@
 export function toggleLetters(opt) {
     const _this = this;
 
-    opt = {
+    opt = Object.assign({
         hide: true,
         angle: 0,
         duration: 1000,
         delay: 50,
         useStrings: false,
         inverseOut: false,
-        callback: function () {}
-    };
+        callback: function () {
+        }
+    }, opt);
 
     if (opt.frame.innerHTML && opt.frame.innerHTML.split('<br>')) {
         const str = opt.frame.innerHTML.split('<br>').map(function (val, i) {

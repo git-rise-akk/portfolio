@@ -1,5 +1,8 @@
 <template>
-  <div class="CustomCursor" :class="store.toggleClass" :style="{ top: `${cursorY}px`, left: `${cursorX}px` }">
+  <div
+    class="CustomCursor"
+    :class="[store.toggleClass, {'CustomCursor--small': store.small}]"
+    :style="{ top: `${cursorY}px`, left: `${cursorX}px` }">
     <transition name="text-fade">
       <div class="CustomCursor__text" v-if="store.text" v-html="store.text"></div>
     </transition>
@@ -15,6 +18,15 @@
     cursorX.value = event.clientX;
     cursorY.value = event.clientY;
   };
+  const WatchEffect = watchEffect(() => {
+        if (store.small) {
+          setTimeout(() => {
+            store.small = false;
+          }, 200);
+        }
+      },
+      {flush: 'post'}
+  );
   onMounted(() => {
     document.addEventListener('mousemove', updateCursorPosition);
   });
@@ -39,6 +51,9 @@
   justify-content: center;
   pointer-events: none;
   @include anim( .3s, width, height);
+  &.CustomCursor--default {
+    border-color: transparent;
+  }
   &.CustomCursor--anim-text {
     .CustomCursor__text {
       transform: rotate(360deg);
@@ -48,13 +63,9 @@
     width: 10rem;
     height: 10rem;
   }
-  &.CustomCursor--click-on-value {
-    animation-name: animation-click;
-    animation-duration: 1s;
-  }
-  &.CustomCursor--click-off-value {
-    animation-name: animation-click;
-    animation-duration: 1s;
+  &.CustomCursor--small {
+    width: 8rem;
+    height: 8rem;
   }
   .CustomCursor__text {
     font-size: 1.6rem;

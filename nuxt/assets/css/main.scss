@@ -82,6 +82,9 @@ h1 {
 }
 
 .page {
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 100vw;
   height: 100vh;
 }
@@ -89,4 +92,43 @@ h1 {
 ::-webkit-scrollbar {
   width: 0;
   scrollbar-width: thin;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: transform .5s linear;
+}
+
+.page-enter-from {
+  transform: translateY(100%);
+}
+
+.page-leave-to {
+   transform: translateY(-10%);
+}
+
+.toggle-letter-wrapper {
+  display: inline-flex;
+  position: relative;
+  height: 10.4rem;
+  overflow: hidden;
+}
+
+.subtitle {
+  .toggle-letter-wrapper {
+    height: 3.3rem;
+  }
+}
+.toggle-letter {
+  display: block;
+  position: relative;
+  will-change: opacity, transform;
+  transform-origin:  0 50%;
+}
+pre {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 2rem;
+  z-index: 10;
 }

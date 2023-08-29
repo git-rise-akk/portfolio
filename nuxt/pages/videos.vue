@@ -10,6 +10,7 @@
             :key="`video-${index}`"
             ref="video"
             class="video"
+            @click="evenOpenPopup(index)"
             @mouseenter="changesState(true, index, 'CustomCursor--big', 'смотреть')"
             @mouseleave="changesState(false, index, '', '')"
         >
@@ -34,6 +35,14 @@
         </li>
       </ul>
     </template-page>
+    <transition appear name="popup-fade">
+      <PopupVideo
+          v-if="openPopup"
+          @closePopup="openPopup = !openPopup"
+          :link="linkVideo"
+          :preview="previewVideoPopup"
+      />
+    </transition>
   </div>
 </template>
 
@@ -42,7 +51,10 @@ import { changesCursorState } from '@/stores/Cursor';
 const store = changesCursorState();
 const video = ref(null);
 const videoClip = ref(null);
-const  config = useRuntimeConfig();
+const linkVideo = ref('');
+const previewVideoPopup = ref('');
+const config = useRuntimeConfig();
+const openPopup = ref(false);
 const { data: backgroundData } = await useFetch(`${config.API_URL}/api/video?populate[backgroundVideo][populate]=*`);
 const { data: videosData } = await useFetch(`${config.API_URL}/api/video?populate[videos][populate]=*`);
 const createsPathBackground = (type) => {
@@ -73,10 +85,31 @@ const changesState = (state, index, newClass, text) => {
     store.text = text;
   }
 }
+const evenOpenPopup = (index) => {
+  linkVideo.value = videosData.value.data.attributes.videos[index].link;
+  previewVideoPopup.value = createsPathPreview(index, 'previewPopup');
+  openPopup.value = !openPopup.value
+  store.small = true;
+}
+onMounted(() => {
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  const firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
 </script>
 
 <style lang="scss">
 .page-videos {
+  .popup-fade-enter-active,
+  .popup-fade-leave-active {
+    @include anim(.7s, opacity, transform);
+  }
+  .popup-fade-enter-from,
+  .popup-fade-leave-to {
+    transform: scale(.9);
+    opacity: 0;
+  }
   .content {
     margin: 0 29rem;
     .videos {
