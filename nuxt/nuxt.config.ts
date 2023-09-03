@@ -16,6 +16,7 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
         'nuxt-icons',
         '@nuxt/image',
+        '@nuxtjs/device',
     ],
     runtimeConfig: {
         public: {

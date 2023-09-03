@@ -1,5 +1,5 @@
 <template>
-  <div class="page page-videos">
+  <div class="page page-videos" :class="{mobile: !$device.isDesktop}">
     <template-page
         :filterOpacity="0.1"
         :bg-video="[createsPathBackground('video'), createsPathBackground('image')]"
@@ -206,6 +206,28 @@ onMounted(() => {
           font-size: 2.4rem;
           font-weight: bold;
           margin-top: 5.4rem;
+        }
+      }
+    }
+  }
+  &.mobile {
+    .content {
+      margin: 0 8.3rem;
+      .video {
+        width: 100%;
+        .video__cover {
+          &.n0,
+          &.n1,
+          &.n2,
+          &.n3,
+          &.n4 {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            height: auto;
+          }
+        }
+        .video__title {
+          font-size: 3rem;
         }
       }
     }

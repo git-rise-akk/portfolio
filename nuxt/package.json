@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@nuxt/image": "^1.0.0-rc.1",
+    "@nuxtjs/device": "^3.1.0",
     "nuxt": "^3.3.1"
   },
   "dependencies": {

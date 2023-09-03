@@ -1,5 +1,5 @@
 <template>
-  <div class="page photos">
+  <div class="page photos" :class="{mobile: !$device.isDesktop}">
     <template-page
         :filterOpacity="0.55"
         :bgImage="imageSrc"
@@ -164,6 +164,31 @@
             left: 0;
             bottom: -3px;
             transition: width .7s;
+          }
+        }
+      }
+    }
+  }
+  &.mobile {
+    .content {
+      margin: 0 8.3rem;
+      .albums {
+        display: block;
+        .album {
+          margin-top: 12rem;
+          height: 68rem;
+          .album__cover {
+            margin-top: 0;
+            height: 55rem;
+          }
+          .album__date {
+            font-size: 3rem;
+          }
+          .album__city {
+            font-size: 3.4rem;
+          }
+          &:first-child {
+            margin-top: 0;
           }
         }
       }

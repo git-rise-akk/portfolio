@@ -4,7 +4,7 @@
     <MenuBtn />
     <Menu />
     <Logo />
-    <CustomCursor />
+    <CustomCursor v-if="$device.isDesktop"/>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="page poster">
+  <div class="page poster" :class="{mobile: !$device.isDesktop}">
     <template-page
         :filterOpacity="0.3"
         :bgImage="imageSrc"
@@ -106,6 +106,17 @@
           div {
             width: 50%;
           }
+        }
+      }
+    }
+  }
+  &.mobile {
+    .events {
+      font-size: 4.4rem;
+      .event {
+        padding: 4rem 0;
+        .event__item--place div {
+          width: initial;
         }
       }
     }

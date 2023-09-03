@@ -1,5 +1,5 @@
 <template>
-  <div class="Menu" :class="{ 'Menu--open': store.menuOpened }">
+  <div class="Menu" :class="[{ 'Menu--open': store.menuOpened }, { mobile: !$device.isDesktop }]">
     <div class="close"></div>
     <div class="Menu__wrapper">
       <div class="Menu__left">
@@ -189,6 +189,20 @@
             width: 100%;
           }
         }
+      }
+    }
+  }
+  &.mobile {
+    .Menu__wrapper {
+      width: 100%;
+      margin: 0 8.3rem;
+      .Menu__left {
+        width: initial;
+        font-size: 3.8rem;
+        margin-right: 13rem;
+      }
+      .Menu__right {
+        font-size: 10.6rem;
       }
     }
   }
