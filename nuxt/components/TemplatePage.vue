@@ -2,12 +2,12 @@
   <div class="filter" :style="{ background: `rgba(0, 0, 0, ${filterOpacity})`}"></div>
   <div v-if="bgImage" class="bg-image" :style="{ backgroundImage: 'url(' + bgImage + ')'}"></div>
   <video v-if="bgVideo" class="bg-video" :src="bgVideo[0]" :poster="bgVideo[1]" playsinline loop muted autoplay></video>
-  <scroll>
+  <Scroll>
     <h1 ref="title" class="title">{{ titlePage }}</h1>
     <div class="content">
       <slot></slot>
     </div>
-  </scroll>
+  </Scroll>
 </template>
 
 <script setup>
@@ -78,10 +78,17 @@
     height: 100%;
     object-fit: cover;
   }
+  .scroll__wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    .scroll__content {
+      position: relative;
+    }
+  }
   .content {
     position: relative;
     z-index: 1;
-    //overflow-y: scroll;
-    //overflow: hidden;
   }
 </style>

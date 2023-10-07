@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.9",
+    "@studio-freight/lenis": "^1.0.23",
     "locomotive-scroll": "^4.1.4",
     "nuxt-icons": "^3.2.1",
     "pinia": "^2.0.35",
