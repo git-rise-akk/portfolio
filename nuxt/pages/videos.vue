@@ -9,7 +9,7 @@
         <li v-for="(video, index) in videosData.data.attributes.videos"
             :key="`video-${index}`"
             ref="video"
-            class="video"
+            :class="[index % 2 === 0 ? 'video--left' : 'video--right', 'video']"
             @click="evenOpenPopup(index)"
             @mouseenter="changesState(true, index, 'CustomCursor--big', 'смотреть')"
             @mouseleave="changesState(false, index, '', '')"
@@ -111,17 +111,26 @@ onMounted(() => {
     opacity: 0;
   }
   .content {
-    margin: 0 29rem;
+    padding: 0 29rem;
     .videos {
-      margin-bottom: 10rem;
+      padding-bottom: 10rem;
       .video {
         position: relative;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        margin-top: 16.3rem;
+        //margin-top: 5rem;
+        margin-top: 10rem;
         width: fit-content;
         cursor: pointer;
+        //transform: translateY(30%);
+        //opacity: 0;
+        //&--left {
+        //  transform: translateX(calc((100vw - 100% + 100%) * -1)) rotate(20deg);
+        //}
+        //&--right{
+        //  transform: translateX(calc((100vw - 100% + 100%) * 1)) rotate(-20deg);
+        //}
         &:first-child {
           margin-top: 0;
         }

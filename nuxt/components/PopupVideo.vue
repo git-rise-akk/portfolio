@@ -59,6 +59,7 @@ onMounted(() => {
   background-color: $main;
   z-index: 4;
   overflow: hidden;
+  position: fixed;
   .preview-enter-active,
   .preview-leave-active {
     @include anim(1s, opacity);

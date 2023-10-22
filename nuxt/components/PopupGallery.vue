@@ -107,6 +107,7 @@
   background-color: $main;
   z-index: 4;
   overflow: hidden;
+  position: fixed;
   .controls {
     @include d100;
     display: flex;

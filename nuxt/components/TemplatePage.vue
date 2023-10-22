@@ -2,16 +2,15 @@
   <div class="filter" :style="{ background: `rgba(0, 0, 0, ${filterOpacity})`}"></div>
   <div v-if="bgImage" class="bg-image" :style="{ backgroundImage: 'url(' + bgImage + ')'}"></div>
   <video v-if="bgVideo" class="bg-video" :src="bgVideo[0]" :poster="bgVideo[1]" playsinline loop muted autoplay></video>
-  <Scroll>
-    <h1 ref="title" class="title">{{ titlePage }}</h1>
-    <div class="content">
-      <slot></slot>
-    </div>
-  </Scroll>
+  <h1 ref="title" class="title">{{ titlePage }}</h1>
+  <div class="content">
+    <slot></slot>
+  </div>
 </template>
 
 <script setup>
   import { toggleLetters } from '@/mixins/globalMixin.js';
+  const lenis = inject('lenis');
   const title = ref(null);
   const props = defineProps({
     filterOpacity: {
@@ -33,19 +32,24 @@
   });
   let page_title;
   onMounted(() => {
+    // console.log(lenis.lenis.value);
+    // let tl = gsap.timeline();
+    // tl.to('animation-element', {
+    //   x: 800
+    // });
     page_title = new toggleLetters({
       duration: 500,
       frame: title.value,
     })
   });
   setTimeout(() => {
-    page_title.toggle(true);
+    page_title?.toggle(true);
   }, 500);
 </script>
 
 <style lang="scss" scoped>
   .filter {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -55,13 +59,12 @@
   }
   .title {
     position: relative;
-    padding-top: 26.3rem;
+    padding: 26.3rem 0 10rem;
     text-align: center;
     z-index: 1;
-    margin-bottom: 10rem;
   }
   .bg-image {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -71,21 +74,12 @@
     background-position: center;
   }
   .bg-video {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
-  .scroll__wrapper {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    .scroll__content {
-      position: relative;
-    }
   }
   .content {
     position: relative;

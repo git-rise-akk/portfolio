@@ -17,15 +17,11 @@ export default defineNuxtConfig({
         'nuxt-icons',
         '@nuxt/image',
         '@nuxtjs/device',
+        'nuxt-lenis',
     ],
     runtimeConfig: {
         public: {
             API_URL: process.env.API_URL,
-        },
-    },
-    vue: {
-        compilerOptions: {
-            isCustomElement: (tag:string) => ['LocomotiveScroll'].includes(tag),
         },
     },
     app: {

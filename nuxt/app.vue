@@ -10,16 +10,19 @@
 
 <style lang="scss">
 .MenuBtn {
-  position: absolute;
+  position: fixed;
   top: 5.1rem;
   right: 6.3rem;
 }
 .Logo {
-  position: absolute;
+  position: fixed;
   top: 6.1rem;
   left: 8.3rem;
 }
 </style>
-<script setup lang="ts">
-import CustomCursor from "~/components/CustomCursor.vue";
+<script setup>
+import CustomCursor from "@/components/CustomCursor.vue";
+import { useLenis } from '@/mixins/lenis.js';
+const lenis = useLenis();
+provide('lenis', lenis)
 </script>

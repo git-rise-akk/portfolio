@@ -8,7 +8,7 @@
       <ul class="albums">
         <li v-for="(album, index) in photosData.data.attributes.albums"
             :key="`album-${index}`"
-            class="album"
+            :class="[index % 2 === 0 ? 'album--left' : 'album--right', 'album']"
             @click="evenOpenPopup(index)"
             @mouseenter="updateCursorState('CustomCursor--big', 'смотреть')"
             @mouseleave="updateCursorState('', '')"
@@ -92,13 +92,20 @@
       grid-template-columns: repeat(2, 1fr);
       row-gap: 9.3rem;
       column-gap: 8.6rem;
-      margin-bottom: 10rem;
+      padding-bottom: 10rem;
       .album {
         height: 47.1rem;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         cursor: pointer;
+        //opacity: 0;
+        //&--left {
+        //  transform: translateX(calc((100vw - 100% + 100%) * -1)) rotate(20deg);
+        //}
+        //&--right{
+        //  transform: translateX(calc((100vw - 100% + 100%) * 1)) rotate(-20deg);
+        //}
         &:hover {
           .preview {
             transform: scale(1.1);
