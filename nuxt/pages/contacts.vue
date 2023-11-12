@@ -38,10 +38,10 @@
 
 <script setup>
   const  config = useRuntimeConfig();
-  const { data: contactsData } = await useFetch(`${config.API_URL}/api/kontakty?populate=*`);
+  const { data: contactsData } = await useFetch(`${config.public.API_URL}/api/kontakty?populate=*`);
 
   const imageSrc = computed(() => {
-    return config.API_URL + contactsData.value.data.attributes.image.data.attributes.url;
+    return config.public.API_URL + contactsData.value.data.attributes.image.data.attributes.url;
   });
 </script>
 

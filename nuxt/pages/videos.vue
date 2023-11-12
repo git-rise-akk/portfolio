@@ -55,13 +55,13 @@ const linkVideo = ref('');
 const previewVideoPopup = ref('');
 const config = useRuntimeConfig();
 const openPopup = ref(false);
-const { data: backgroundData } = await useFetch(`${config.API_URL}/api/video?populate[backgroundVideo][populate]=*`);
-const { data: videosData } = await useFetch(`${config.API_URL}/api/video?populate[videos][populate]=*`);
+const { data: backgroundData } = await useFetch(`${config.public.API_URL}/api/video?populate[backgroundVideo][populate]=*`);
+const { data: videosData } = await useFetch(`${config.public.API_URL}/api/video?populate[videos][populate]=*`);
 const createsPathBackground = (type) => {
-  return config.API_URL + backgroundData.value.data.attributes.backgroundVideo[type].data.attributes.url;
+  return config.public.API_URL + backgroundData.value.data.attributes.backgroundVideo[type].data.attributes.url;
 }
 const createsPathPreview = (index, type) => {
-  return config.API_URL + videosData.value.data.attributes.videos[index][type].data.attributes.url;
+  return config.public.API_URL + videosData.value.data.attributes.videos[index][type].data.attributes.url;
 }
 const getClass = (index) => {
   const classNames = ['n0', 'n1', 'n2', 'n3', 'n4'];
@@ -123,14 +123,14 @@ onMounted(() => {
         margin-top: 10rem;
         width: fit-content;
         cursor: pointer;
-        //transform: translateY(30%);
-        //opacity: 0;
-        //&--left {
-        //  transform: translateX(calc((100vw - 100% + 100%) * -1)) rotate(20deg);
-        //}
-        //&--right{
-        //  transform: translateX(calc((100vw - 100% + 100%) * 1)) rotate(-20deg);
-        //}
+        transform: translateY(30%);
+        opacity: 0;
+        &--left {
+          transform: translateX(calc((100vw - 100% + 100%) * -1)) rotate(20deg);
+        }
+        &--right{
+          transform: translateX(calc((100vw - 100% + 100%) * 1)) rotate(-20deg);
+        }
         &:first-child {
           margin-top: 0;
         }

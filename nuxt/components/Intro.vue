@@ -20,7 +20,7 @@
   });
   const emit = defineEmits(['playVideo']);
   const config = useRuntimeConfig();
-  const { data: introData } = await useFetch(`${config.API_URL}/api/intro?populate=*`);
+  const { data: introData } = await useFetch(`${config.public.API_URL}/api/intro?populate=*`);
   const loadingPercentage = ref(0);
   const introHide = ref(false);
   const timeLoading = ref(5);
@@ -35,13 +35,12 @@
   }, 0);
 
   const imageSrc = computed(() => {
-    return config.API_URL + introData.value.data.attributes.image.data.attributes.url;
+    return config.public.API_URL + introData.value.data.attributes.image.data.attributes.url;
   });
 
   onMounted(() => {
     page_title.value = new toggleLetters({
       duration: 1000,
-      delay: 100,
       frame: name.value,
     })
 

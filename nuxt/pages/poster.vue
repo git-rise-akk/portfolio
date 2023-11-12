@@ -33,13 +33,13 @@
   import { changesCursorState } from '@/stores/Cursor';
   const store = changesCursorState();
   const  config = useRuntimeConfig();
-  const { data: posterData } = await useFetch(`${config.API_URL}/api/afisha?populate=*`);
+  const { data: posterData } = await useFetch(`${config.public.API_URL}/api/afisha?populate=*`);
   const date = new Date();
   const month = date.getMonth();
   const day = date.getDate();
 
   const imageSrc = computed(() => {
-    return config.API_URL + posterData.value.data.attributes.image.data.attributes.url;
+    return config.public.API_URL + posterData.value.data.attributes.image.data.attributes.url;
   });
 
   const wrapsSpan = ((text) => {

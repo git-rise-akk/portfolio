@@ -15,7 +15,8 @@
 <!--      </ul>-->
 <!--    </template-page>-->
     <section class="section section--n1">1</section>
-    <section class="section">2</section>
+<!--    <section class="section section&#45;&#45;n2">2</section>-->
+    <section class="section section--n3">3</section>
   </div>
 </template>
 
@@ -37,13 +38,20 @@ onMounted(() => {
 <style lang="scss">
 .page-test {
   .section {
+    position: relative;
     width: 100vw;
     height: 100vh;
-    background: #ea6262;
+    background: transparent;
     font-size: 10rem;
     text-align: center;
+    transition: 1s transform;
     &.section--n1 {
       background: #13bea0;
+      position: fixed;
+    }
+    &.section--n3 {
+      background: #8279d7;
+      transform: translateY(100%);
     }
   }
   .content {

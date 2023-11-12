@@ -39,23 +39,23 @@
   const config = useRuntimeConfig();
   const openPopup = ref(false);
   const photosGallery= ref([]);
-  const { data: photosData } = await useFetch(`${config.API_URL}/api/foto?populate=*`);
-  const { data: albumData } = await useFetch(`${config.API_URL}/api/foto?populate[albums][populate]=*`);
+  const { data: photosData } = await useFetch(`${config.public.API_URL}/api/foto?populate=*`);
+  const { data: albumData } = await useFetch(`${config.public.API_URL}/api/foto?populate[albums][populate]=*`);
   const imageSrc = computed(() => {
-    return config.API_URL + photosData.value.data.attributes.image.data.attributes.url;
+    return config.public.API_URL + photosData.value.data.attributes.image.data.attributes.url;
   });
   const shouldAddClass = (index) => {
     return index > 0 && ((index - 1) % 4 === 2 || (index - 1) % 4 === 3);
   }
 
   const createsPathImage = (index) => {
-    return config.API_URL + albumData.value.data.attributes.albums[index].preview.data.attributes.url;
+    return config.public.API_URL + albumData.value.data.attributes.albums[index].preview.data.attributes.url;
   }
 
   const createsArrayPhotos = (index) => {
     photosGallery.value = [];
     (albumData.value.data.attributes.albums[index].photos.data).forEach((item, index) => {
-      photosGallery.value.push(config.API_URL + item.attributes.url);
+      photosGallery.value.push(config.public.API_URL + item.attributes.url);
     })
   };
 

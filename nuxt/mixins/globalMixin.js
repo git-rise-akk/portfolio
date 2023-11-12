@@ -5,7 +5,7 @@ export function toggleLetters(opt) {
         hide: true,
         angle: 0,
         duration: 1000,
-        delay: 50,
+        delay: 70,
         useStrings: false,
         inverseOut: false,
         callback: function () {

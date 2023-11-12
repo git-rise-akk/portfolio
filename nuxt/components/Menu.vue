@@ -34,7 +34,7 @@
   const store = useMenuStore();
   const menuItems = [
       {
-        href: '/',
+        href: '/?section=about',
         title: 'Обо мне',
       },
       {

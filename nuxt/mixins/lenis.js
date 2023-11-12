@@ -24,7 +24,7 @@ export const useLenis = () => {
 
 
         // появление блоков справа и слева при скролле
-        // var sections = gsap.utils.toArray('.album');
+        // var sections = gsap.utils.toArray('.video');
         //
         // sections.forEach((block, index) => {
         //     console.log(index)
@@ -66,53 +66,6 @@ export const useLenis = () => {
         //     });
         //
         // })
-
-        // анимация на главной
-        // var sections = gsap.utils.toArray('.video');
-        //
-        // sections.forEach((block, index) => {
-        //
-        //     gsap.to(block, {
-        //         y: 0,
-        //         duration: index % 2 === 0 ? 0.7 : 0.3,
-        //         scrollTrigger: {
-        //             trigger: block,
-        //             start: 'top 70%',
-        //             scrub: true,
-        //             end: 'bottom center',
-        //             markers: true,
-        //         }
-        //     });
-        //
-        // })
-
-        // анимация при скролле первой секции на главной
-        let home = gsap.timeline({
-           scrollTrigger: {
-               trigger: '.video',
-               start: 'top top',
-               end: 'bottom top',
-               scrub: true,
-           }
-        });
-        home.to(".video", {
-            scale: 1.2,
-        });
-
-        // анимация секции about
-        let aboutImag = gsap.timeline({
-            scrollTrigger: {
-                trigger: '.about-images-two',
-                start: 'top 70%',
-                end: 'bottom top',
-                markers: true,
-            }
-        });
-        aboutImag.to(".about-images-two", {
-            x: 0,
-            opacity: 1,
-            duration: 1,
-        });
 
         lenis.value = new Lenis();
         lenis.value.on('scroll', ScrollTrigger.update)
