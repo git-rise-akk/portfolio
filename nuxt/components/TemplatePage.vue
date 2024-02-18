@@ -10,7 +10,9 @@
 
 <script setup>
   import { toggleLetters } from '@/mixins/globalMixin.js';
-  const lenis = inject('lenis');
+  import { useIntroStore } from '@/stores/intro';
+  const store = useIntroStore();
+  // const lenis = inject('lenis');
   const title = ref(null);
   const props = defineProps({
     filterOpacity: {
@@ -37,6 +39,7 @@
     // tl.to('animation-element', {
     //   x: 800
     // });
+    store.hideIntro = true;
     page_title = new toggleLetters({
       duration: 500,
       frame: title.value,

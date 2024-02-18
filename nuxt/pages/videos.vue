@@ -16,7 +16,6 @@
         >
           <div class="video__cover" :class="getClass(index)">
             <div class="preview-wrapper">
-              <img class="preview-bg" :src="createsPathPreview(index, 'preview')"/>
               <img class="preview" :src="createsPathPreview(index, 'preview')"/>
               <video
                   ref="videoClip"
@@ -30,6 +29,7 @@
             </div>
             <div class="shadow"></div>
             <div class="cover-filter"></div>
+            <div ref="loadingLine" class="loading-line"></div>
           </div>
           <div class="video__title" v-html="replaceAmpersand(video.title)"></div>
         </li>
@@ -48,15 +48,19 @@
 
 <script setup>
 import { changesCursorState } from '@/stores/Cursor';
+const { isDesktop } = useDevice();
 const store = changesCursorState();
 const video = ref(null);
 const videoClip = ref(null);
+const loadingLine = ref(null);
 const linkVideo = ref('');
 const previewVideoPopup = ref('');
 const config = useRuntimeConfig();
 const openPopup = ref(false);
+const lenis = inject('lenis');
 const { data: backgroundData } = await useFetch(`${config.public.API_URL}/api/video?populate[backgroundVideo][populate]=*`);
 const { data: videosData } = await useFetch(`${config.public.API_URL}/api/video?populate[videos][populate]=*`);
+
 const createsPathBackground = (type) => {
   return config.public.API_URL + backgroundData.value.data.attributes.backgroundVideo[type].data.attributes.url;
 }
@@ -73,16 +77,20 @@ const replaceAmpersand = (input) => {
 }
 
 const changesState = (state, index, newClass, text) => {
-  if  (state) {
-    video.value[index].classList.add('video--play-video');
-    videoClip.value[index].currentTime = 0;
-    videoClip.value[index].play();
-    store.toggleClass = newClass;
-    store.text = text;
-  } else {
-    video.value[index].classList.remove('video--play-video');
-    store.toggleClass = newClass;
-    store.text = text;
+  if (isDesktop) {
+    if  (state) {
+      loadingLine.value[index].classList.add('loading-line--active');
+      setTimeout(() => {
+        videoClip.value[index].play();
+      }, 1000);
+      store.toggleClass = newClass;
+      store.text = text;
+    } else {
+      loadingLine.value[index].classList.remove('loading-line--active');
+      videoClip.value[index].pause();
+      store.toggleClass = newClass;
+      store.text = text;
+    }
   }
 }
 const evenOpenPopup = (index) => {
@@ -91,11 +99,31 @@ const evenOpenPopup = (index) => {
   openPopup.value = !openPopup.value
   store.small = true;
 }
+
 onMounted(() => {
   const tag = document.createElement('script');
   tag.src = "https://www.youtube.com/iframe_api";
   const firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      {
+        rootMargin: '0px 0px 110px 0px',
+        threshold: 0.5,
+      }
+  );
+
+  if (video.value) {
+    video.value.forEach((el) => observer.observe(el))
+  }
+
+  lenis.lenis.value.resize();
 });
 </script>
 
@@ -119,37 +147,55 @@ onMounted(() => {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        //margin-top: 5rem;
         margin-top: 10rem;
         width: fit-content;
         cursor: pointer;
-        transform: translateY(30%);
         opacity: 0;
-        &--left {
-          transform: translateX(calc((100vw - 100% + 100%) * -1)) rotate(20deg);
-        }
-        &--right{
-          transform: translateX(calc((100vw - 100% + 100%) * 1)) rotate(-20deg);
-        }
+        transition: 0.8s opacity linear;
+        animation: offset ease;
+        animation-timeline: view(block);
+        animation-range: cover 0% cover 100%;
         &:first-child {
-          margin-top: 0;
+          transition: 0.8s opacity linear .6s;
+          .preview,
+          .video-clip {
+            transition: 1s transform .6s;
+          }
+        }
+        //transition: 0.8s transform linear, 0.8s opacity linear;
+        //&:first-child {
+        //  transition: 0.9s transform linear .5s;
+        //}
+        //&--left {
+        //  transform-origin: top right;
+        //  transform: translateX(calc(-100% - 30.5rem)) rotate(20deg);
+        //}
+        //&--right {
+        //  transform-origin: top left;
+        //  transform: translateX(calc(100% + 30.5rem)) rotate(-20deg);
+        //}
+
+        .loading-line {
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          width: 0;
+          height: 2px;
+          background: #fff;
+          @include anim(1s, width);
+          &--active {
+            width: 100%;
+          }
+        }
+        &.visible {
+          opacity: 1;
+          .video__cover .preview,
+          .video__cover .video-clip {
+            transform: scale(1);
+          }
         }
         &:nth-child(2n) {
           margin-left: auto;
-        }
-        &.video--play-video {
-          .video__cover .preview-wrapper{
-            .preview {
-              opacity: 0;
-              visibility: hidden;
-              transition: 1s opacity, 1s visibility;
-            }
-            .video-clip {
-              opacity: 1;
-              visibility: visible;
-              transition: .4s opacity, .4s visibility;
-            }
-          }
         }
         &__cover {
           position: relative;
@@ -161,24 +207,15 @@ onMounted(() => {
             position: relative;
             overflow: hidden;
             .preview,
-            .video-clip,
-            .preview-bg {
+            .video-clip {
               position: absolute;
               left: 0;
               top: 0;
               width: 100%;
               height: 100%;
               object-fit: cover;
-            }
-            .preview {
-              opacity: 1;
-              visibility: visible;
-              transition: .4s opacity, .4s visibility;
-            }
-            .video-clip {
-              opacity: 0;
-              visibility: hidden;
-              transition: 1s opacity, 1s visibility;
+              transform: scale(1.2);
+              @include anim(1s, transform);
             }
           }
           &.n0 {
@@ -216,11 +253,20 @@ onMounted(() => {
           font-weight: bold;
           margin-top: 5.4rem;
         }
+
+        @keyframes offset {
+          from { transform: translateY(0); }
+          to { transform: translateY(-30%); }
+        }
       }
     }
   }
   &.mobile {
+    .title {
+      padding: 26.3rem 0 29.3rem;
+    }
     .content {
+      padding: 0;
       margin: 0 8.3rem;
       .video {
         width: 100%;
@@ -230,13 +276,19 @@ onMounted(() => {
           &.n2,
           &.n3,
           &.n4 {
-            aspect-ratio: 16 / 9;
+            aspect-ratio: 16/9;
             width: 100%;
             height: auto;
           }
         }
         .video__title {
           font-size: 3rem;
+        }
+        &:nth-child(2) {
+          transition: 0.8s opacity linear 1.2s;
+          .preview {
+            transition: .4s opacity, .4s visibility, 1s transform 1.2s;
+          }
         }
       }
     }

@@ -53,6 +53,8 @@
       .parts {
         display: flex;
         font-family: 'Gilroy-Bold', Arial, Helvetica, sans-serif;
+        animation: showContent 1s .6s;
+        animation-fill-mode: both;
         .part--one {
           font-size: 4rem;
           font-weight: bold;
@@ -119,5 +121,9 @@
         }
       }
     }
+  }
+  @keyframes showContent {
+    from { transform: translateY(30%); opacity: 0 }
+    to { transform: translateY(0); opacity: 1 }
   }
 </style>

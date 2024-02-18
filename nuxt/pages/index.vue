@@ -11,7 +11,7 @@
       @click="switchesSound()"
     >
       <div class="filter"></div>
-      <video ref="video" :class="['video', {'video--animation': step === 1}]" :src="srcVideo" poster="/images/home/preview_video.jpg" playsinline loop muted></video>
+      <video ref="video" :class="['video', {'video--animation': step === 1}]" :src="srcVideo" poster="/images/home/preview_video.jpg" playsinline loop muted :autoplay="store.hideIntro"></video>
       <div
         class="sound_wrapper"
         :class="{active: soundOn}"
@@ -68,10 +68,6 @@
   const animationImg = ref(false);
   const router = useRouter()
 
-  const showAttrAutoplay = computed(() => {
-    return store.hideIntro ? 'autoplay' : 'no';
-  });
-
   function canplayEvent() {
       videoLoaded.value = true;
   }
@@ -85,7 +81,7 @@
   }
 
   const changesStep = (direction) => {
-    if (lenis.lenis.value.animatedScroll === 0 && direction === 1) {
+    if (lenis.lenis.value.animatedScroll > 0 && direction === 1) {
       step.value = 1;
     } else
     if( lenis.lenis.value.animatedScroll === 0 && direction === -1) {
@@ -114,12 +110,9 @@
     lenis.lenis.value.start();
     video.value.addEventListener('canplay', canplayEvent());
     srcVideo.value = '/video/index.mp4';
-    const html = document.querySelector('html');
-    html.addEventListener('wheel', (e) => {
-      const direction = e.deltaY / 100;
-      changesStep(direction);
+    lenis.lenis.value.on('scroll', () => {
+      changesStep(lenis.lenis.value.direction);
     });
-
     if (router.currentRoute.value.query.section === 'about') {
       step.value = 1;
     }
@@ -128,8 +121,6 @@
       duration: 500,
       frame: title.value,
     })
-
-    console.log(showAttrAutoplay.value)
   });
 
   onBeforeUnmount(() => {
@@ -138,7 +129,6 @@
   });
 
   const callbackEndIntro = () => {
-    console.log('play');
     if (video.value) {
       video.value.play();
     }
@@ -166,6 +156,7 @@
 
 <style lang="scss">
 .home {
+  height: calc(100vh + 2px);
   .fake-enter-active,
   .fake-leave-active {
     transition: transform 1.5s cubic-bezier(0.33, 1, 0.68, 1);
@@ -187,7 +178,7 @@
       object-fit: cover;
       @include anim(1.2s, transform);
       &--animation {
-        transform: scale(1.2);
+        transform: scale(1.3);
       }
     }
     &.section--home {

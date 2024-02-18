@@ -1,26 +1,28 @@
 <template>
   <div class="page page-test" :class="{mobile: !$device.isDesktop}">
-<!--    <template-page-->
-<!--        :filterOpacity="0.1"-->
-<!--        :titlePage="'TEST'"-->
-<!--    >-->
-<!--      <ul class="blocks">-->
-<!--        <li v-for="(block, index) in blocks"-->
-<!--            :key="`block-${index}`"-->
-<!--            ref="block"-->
-<!--            :class="[index % 2 === 0 ? 'block&#45;&#45;left' : 'block&#45;&#45;right', 'block']"-->
-<!--        >-->
-<!--          <div class="block__title">{{ block }}</div>-->
-<!--        </li>-->
-<!--      </ul>-->
-<!--    </template-page>-->
-    <section class="section section--n1">1</section>
-<!--    <section class="section section&#45;&#45;n2">2</section>-->
-    <section class="section section--n3">3</section>
+    <template-page
+        :filterOpacity="0.1"
+        :titlePage="'TEST'"
+    >
+      <ul class="blocks">
+        <li v-for="(block, index) in blocks"
+            :key="`block-${index}`"
+            ref="block"
+            :class="[index % 2 === 0 ? 'block--left' : 'block--right', 'block']"
+        >
+          <div class="block__title">{{ block }}</div>
+        </li>
+      </ul>
+    </template-page>
   </div>
 </template>
 
 <script setup>
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+const lenis = inject('lenis');
+const main = ref();
+let ctx;
 const blocks = {
   1: 'Block 1',
   2: 'Block 2',
@@ -31,29 +33,60 @@ const blocks = {
   7: 'Block 7',
   8: 'Block 8',
 };
+const block = ref(null);
+gsap.registerPlugin(ScrollTrigger);
 onMounted(() => {
+  ctx = gsap.context(() => {
+    const sections = gsap.utils.toArray('.block');
+    sections.forEach((block, index) => {
+      gsap.to(block, {
+        y: 0,
+        duration: 0.7,
+        scrollTrigger: {
+          trigger: block,
+          start: 'top 70%',
+          scrub: true,
+          end: 'bottom center',
+          markers: true,
+        }
+      });
+    });
+  }, main.value);
+  const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      {
+        rootMargin: '0px 750px 0px 750px',
+        threshold: 0.5,
+      }
+  );
+
+  if (block.value) {
+    block.value.forEach((el) => observer.observe(el))
+  }
+  // setTimeout(() => {
+  //   lenis.lenis.value.on('scroll',  (e) => {
+  //     const block = document.querySelectorAll('.block');
+  //     block.forEach((el, index) => {
+  //       const scrollValue = window.scrollY;
+  //       el.style.transform = `translateY(${103 - scrollValue * 0.2}px)`;
+        // el.style.transform = `translateY(${(e.animatedScroll / 5) * (-1 * e.direction)}px)`
+  //     })
+  //   });
+  // }, 0)
+});
+onUnmounted(() => {
+  // ctx.revert(); // <- Easy Cleanup!
 });
 </script>
 
 <style lang="scss">
 .page-test {
-  .section {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    background: transparent;
-    font-size: 10rem;
-    text-align: center;
-    transition: 1s transform;
-    &.section--n1 {
-      background: #13bea0;
-      position: fixed;
-    }
-    &.section--n3 {
-      background: #8279d7;
-      transform: translateY(100%);
-    }
-  }
   .content {
     display: flex;
     align-items: center;
@@ -74,15 +107,23 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    //transform: translateX(calc((100vh - 100% + 100%) * -1));
     //opacity: 0;
     transform: translateY(50%);
-    &--left {
-      //transform: translateX(calc((100vw - 100% + 100%) * -1)) rotate(20deg);
-    }
-    &--right{
+    //transition: 0.8s transform linear, 0.8s opacity linear;
+    transition: 0.3s transform linear;
+    //&--left {
+    //  transform-origin: top right;
+    //  transform: translateX(calc(-100% - 30.5rem)) rotate(20deg);
+    //}
+    &--right {
       margin-left: auto;
+      //transform-origin: top left;
+      //transform: translateX(calc(100% + 30.5rem)) rotate(-20deg);
     }
+    //&.visible {
+    //  opacity: 1;
+    //  transform: translateX(0) rotate(0deg);
+    //}
   }
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
   <div class="page photos" :class="{mobile: !$device.isDesktop}">
+    <div class="rullers"></div>
     <template-page
         :filterOpacity="0.55"
         :bgImage="imageSrc"
@@ -8,12 +9,13 @@
       <ul class="albums">
         <li v-for="(album, index) in photosData.data.attributes.albums"
             :key="`album-${index}`"
+            ref="album"
             :class="[index % 2 === 0 ? 'album--left' : 'album--right', 'album']"
             @click="evenOpenPopup(index)"
             @mouseenter="updateCursorState('CustomCursor--big', 'смотреть')"
             @mouseleave="updateCursorState('', '')"
         >
-          <div class="album__cover" :class="{'album__cover--min': shouldAddClass(index) || index === 0}" >
+          <div class="album__cover" >
             <div class="shadow"></div>
             <img class="preview" :src="createsPathImage(index)" />
             <div class="cover-filter"></div>
@@ -37,16 +39,15 @@
   import { changesCursorState } from '@/stores/Cursor';
   const store = changesCursorState();
   const config = useRuntimeConfig();
+  const lenis = inject('lenis');
   const openPopup = ref(false);
   const photosGallery= ref([]);
+  const album = ref(null);
   const { data: photosData } = await useFetch(`${config.public.API_URL}/api/foto?populate=*`);
   const { data: albumData } = await useFetch(`${config.public.API_URL}/api/foto?populate[albums][populate]=*`);
   const imageSrc = computed(() => {
     return config.public.API_URL + photosData.value.data.attributes.image.data.attributes.url;
   });
-  const shouldAddClass = (index) => {
-    return index > 0 && ((index - 1) % 4 === 2 || (index - 1) % 4 === 3);
-  }
 
   const createsPathImage = (index) => {
     return config.public.API_URL + albumData.value.data.attributes.albums[index].preview.data.attributes.url;
@@ -68,6 +69,29 @@
     store.toggleClass = newClass;
     store.text = text;
   };
+
+  onMounted(() => {
+    const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px 100px 0px',
+          threshold: 0.5,
+        }
+    );
+
+    if (album.value) {
+      album.value.forEach((el) => observer.observe(el))
+    }
+
+    lenis.lenis.value.resize();
+
+  });
 </script>
 
 <style lang="scss">
@@ -85,6 +109,9 @@
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
   }
+  .title {
+    padding: 26.3rem 0 29.3rem;
+  }
   .content {
     margin: 0 29rem;
     .albums {
@@ -99,13 +126,40 @@
         flex-direction: column;
         justify-content: space-between;
         cursor: pointer;
-        //opacity: 0;
-        //&--left {
-        //  transform: translateX(calc((100vw - 100% + 100%) * -1)) rotate(20deg);
-        //}
-        //&--right{
-        //  transform: translateX(calc((100vw - 100% + 100%) * 1)) rotate(-20deg);
-        //}
+        opacity: 0;
+        transition: 0.8s opacity linear;
+        &:first-child,
+        &:nth-child(2) {
+          transition: 0.8s opacity linear .6s;
+          .preview {
+            transition: transform 1s .6s;
+          }
+        }
+        &.visible {
+          opacity: 1;
+          .preview {
+            transform: scale(1);
+          }
+        }
+        &--left {
+          animation: offset-left ease;
+          animation-timeline: view(block);
+          animation-range: cover 0% cover 100%;
+          transform: translateY(-30%);
+        }
+        &--right{
+          animation: offset-right ease;
+          animation-timeline: view(block);
+          animation-range: cover 0% cover 100%;
+        }
+        @keyframes offset-left {
+          from { transform: translateY(-30%); }
+          to { transform: translateY(-60%); }
+        }
+        @keyframes offset-right {
+          from { transform: translateY(0); }
+          to { transform: translateY(-30%); }
+        }
         &:hover {
           .preview {
             transform: scale(1.1);
@@ -141,6 +195,7 @@
             width: 100%;
             transition: transform 1s;
             will-change: transform;
+            transform: scale(1.2);
           }
           .cover-filter {
             position: absolute;
@@ -196,6 +251,12 @@
           }
           &:first-child {
             margin-top: 0;
+          }
+          &--left {
+            transform: translateY(0);
+            animation: offset-right ease;
+            animation-timeline: view(block);
+            animation-range: cover 0% cover 100%;
           }
         }
       }

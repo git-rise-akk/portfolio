@@ -20,6 +20,8 @@
             :to="value.href"
             :target="value.title === 'Медитации' ? '_blank' : ''"
             class="menu-item"
+            :prefetch="true"
+            prefetchedClass="prefetched"
             @click="store.menuOpened = !store.menuOpened;"
         >
           {{ value.title }}
@@ -112,11 +114,11 @@
   }
   .Menu__wrapper {
     display: flex;
-    margin-right: 41.3rem;
+    margin-right: 21vw;
     .Menu__left {
       font-family: 'Gilroy-Bold', Arial, Helvetica, sans-serif;
       font-size: 2.8rem;
-      width: 41.3rem;
+      width: 21vw;
       .social-media__link {
         position: relative;
         width: fit-content;
@@ -157,7 +159,7 @@
         position: relative;
         display: block;
         width: fit-content;
-        margin-bottom: 2.1rem;
+        margin-bottom: 2.5rem;
         opacity: 0;
         transform: translateY(10rem);
         transition: opacity .5s, transform .4s;

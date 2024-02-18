@@ -72,21 +72,6 @@
       introHide.value  = true;
     }
   });
-
-
-  // if (value !== 100) {
-  //   if(!this.videoLoaded && this.loadingPercentage === 98) {
-  //     this.clearTimeout.clearTimeout();
-  //   } else {
-  //     this.clearTimeout = setTimeout(() => {
-  //       this.loadingPercentage += 1;
-  //     }, this.timeLoading);
-  //   }
-  //
-  // } else {
-  //   this.introHide = true;
-  //   this.$emit('playVideo');
-  // }
 </script>
 
 <style lang="scss">
