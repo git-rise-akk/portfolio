@@ -1,5 +1,5 @@
 <template>
-  <div class="page poster" :class="{mobile: !$device.isDesktop}">
+  <div ref="root" class="page poster" :class="{mobile: !$device.isDesktop}">
     <template-page
         :filterOpacity="0.3"
         :bgImage="imageSrc"
@@ -7,10 +7,10 @@
     >
       <ul v-if="posterData.data.attributes.poetryEvenings.length" class="events">
         <template
-          v-for="(event, index) in posterData.data.attributes.poetryEvenings"
-          :key="`event-${index}`">
+            v-for="(event, index) in posterData.data.attributes.poetryEvenings"
+            :key="`event-${index}`">
           <a
-              v-if="Number(event.date.split('/')[1]) > month && Number(event.date.split('/')[0]) > day"
+              v-if="checksRelevanceEvent(event.date)"
               class="event"
               :href="event.link"
               target="_blank"
@@ -32,24 +32,25 @@
 </template>
 
 <script setup>
+  import Lenis from "@studio-freight/lenis";
+  import { gsap } from "gsap";
   import { changesCursorState } from '@/stores/Cursor';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
   const store = changesCursorState();
   const  config = useRuntimeConfig();
   const { data: posterData } = await useFetch(`${config.public.API_URL}/api/afisha?populate=*`);
   const date = new Date();
-  const lenis = inject('lenis');
+
   const month = date.getMonth();
   const day = date.getDate();
   const eventWrapper = ref(null);
-  let vis = ref(false);
+  const root = ref(null);
+  const main = ref();
+  let ctx;
 
   const imageSrc = computed(() => {
     return config.public.API_URL + posterData.value.data.attributes.image.data.attributes.url;
   });
-
-  setTimeout(() => {
-    vis.value = true;
-  }, 500);
 
   const wrapsSpan = ((text) => {
     return text.replace(/^(.{3})(\w{2})/, "$1<span>$2</span>");
@@ -62,24 +63,48 @@
     store.toggleClass = newClass;
     store.text = text;
   };
+
+  const checksRelevanceEvent = (date) => {
+    const currentDate = new Date();
+    const inputDate = new Date(currentDate.getFullYear(), parseInt(date.split('/')[1]) - 1, parseInt(date.split('/')[0]));
+
+    return inputDate > currentDate;
+  };
+
   onBeforeUnmount(() => {
     updateCursorState('', '');
   });
 
   onMounted(() => {
-    lenis.lenis.value.resize();
+    const lenis = new Lenis({
+      wrapper: root.value,
+      content: root.value.querySelector('.scroll-content')
+    });
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    lenis.on('scroll', ScrollTrigger.update);
+
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+
+    gsap.ticker.lagSmoothing(0);
+
     // блокируем скрол до появлени всех элементов
-    lenis.lenis.value.stop();
+    lenis.stop();
     // навешивание класса в зависимости от того,
     // находиться ли элемент в зоне видимости 1 экрана
     if(eventWrapper.value) {
+      const amendment = eventWrapper.value[0].getBoundingClientRect().top > 400 ? innerHeight : 0;
       eventWrapper.value.forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        const topPlusHeight = rect.top + rect.height;
-        const heightScreen = document.documentElement.clientHeight;
-        console.log(topPlusHeight, heightScreen, topPlusHeight < heightScreen)
-        if(topPlusHeight < heightScreen) {
+        let rect = el.getBoundingClientRect();
+        const elTop = rect.top - amendment;
+        if (elTop < innerHeight) {
           el.classList.add('visible');
+          setTimeout(() => {
+            el.classList.add('not-transition');
+          }, 4000)
         } else {
           el.classList.add('not-anim');
         }
@@ -87,10 +112,29 @@
     }
     const visibleElements = document.querySelectorAll('.visible').length;
     const timeShow = 700;
+    // время появления всех видимых элементов
     const timeOnScroll = timeShow * visibleElements;
     setTimeout(() => {
-      lenis.lenis.value.start();
+      lenis.start();
     }, timeOnScroll);
+
+    const events = gsap.utils.toArray('.event_wrapper');
+
+    events.forEach((event) => {
+      gsap.to(event, {
+        scale: 1,
+        opacity: 1,
+        duration: 0.7,
+          scrollTrigger: {
+              trigger: event,
+              start: 'top bottom',
+              scroller: '.page.poster',
+              scrub: true,
+              end: 'bottom 70%',
+              markers: true,
+          }
+      });
+    });
   });
 </script>
 
@@ -112,11 +156,26 @@
     font-size: 6.4rem;
     font-family: 'Sverdlovsk', Arial, Helvetica, sans-serif;
     .event {
-      min-height: 11.6rem;
+      position: relative;
       padding: initial !important;
-      animation: offset ease;
-      animation-timeline: view(block);
-      animation-range: cover 0% cover 30%;
+      &:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 100%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        @include anim( .7s, background-color, width);
+        background-color: rgba(255, 255, 255, 0);
+      }
+      &:hover {
+        &:after {
+          width: calc(100% + 16.6rem);
+          background: rgb(255,255,255);
+          background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 15%, rgba(255,255,255,0.19931722689075626) 50%, rgba(255,255,255,0.2) 85%, rgba(255,255,255,0) 100%);
+        }
+      }
       .event_wrapper {
         display: flex;
         justify-content: space-between;
@@ -125,28 +184,42 @@
         border-top: 2px solid #fff;
         opacity: 0;
         transform: scale(1.1);
-        &.n1 {
+        // написать цикл
+        &.n0:not(.not-anim) {
           transition: opacity .7s .7s, transform .7s .7s;
         }
-        &.n2 {
+        &.n1:not(.not-anim) {
           transition: opacity .7s 1.2s, transform .7s 1.2s;
         }
-        &.n3 {
+        &.n2:not(.not-anim) {
           transition: opacity .7s 1.7s, transform .7s 1.7s;
         }
-        &.n4 {
+        &.n3:not(.not-anim) {
           transition: opacity .7s 2.2s, transform .7s 2.2s;
         }
-        &.n5 {
+        &.n4:not(.not-anim) {
           transition: opacity .7s 2.7s, transform .7s 2.7s;
         }
+        &.n5:not(.not-anim) {
+          transition: opacity .7s 3.2s, transform .7s 3.2s;
+        }
+        &.n6:not(.not-anim) {
+          transition: opacity .7s 3.7s, transform .7s 3.7s;
+        }
+        &.n7:not(.not-anim) {
+          transition: opacity .7s 4.2s, transform .7s 4.2s;
+        }
+
         &.visible {
           opacity: 1;
           transform: scale(1);
         }
         &.not-anim {
           opacity: 1;
-          transform: scale(1);
+          scale: 1;
+        }
+        &.not-transition {
+          transition: opacity 0s 0s, transform 0s 0s !important;
         }
       }
 
@@ -180,10 +253,6 @@
             width: 50%;
           }
         }
-      }
-      @keyframes offset {
-        from { transform: scale(1.1); opacity: 0 }
-        to { transform: scale(1); opacity: 1 }
       }
     }
   }

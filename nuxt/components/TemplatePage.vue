@@ -1,10 +1,12 @@
 <template>
-  <div class="filter" :style="{ background: `rgba(0, 0, 0, ${filterOpacity})`}"></div>
-  <div v-if="bgImage" class="bg-image" :style="{ backgroundImage: 'url(' + bgImage + ')'}"></div>
-  <video v-if="bgVideo" class="bg-video" :src="bgVideo[0]" :poster="bgVideo[1]" playsinline loop muted autoplay></video>
-  <h1 ref="title" class="title">{{ titlePage }}</h1>
-  <div class="content">
-    <slot></slot>
+  <div class="scroll-content">
+    <div class="filter" :style="{ background: `rgba(0, 0, 0, ${filterOpacity})`}"></div>
+    <div v-if="bgImage" class="bg-image" :style="{ backgroundImage: 'url(' + bgImage + ')'}"></div>
+    <video v-if="bgVideo" class="bg-video" :src="bgVideo[0]" :poster="bgVideo[1]" playsinline loop muted autoplay></video>
+    <h1 ref="title" class="title">{{ titlePage }}</h1>
+    <div class="content">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -12,7 +14,6 @@
   import { toggleLetters } from '@/mixins/globalMixin.js';
   import { useIntroStore } from '@/stores/intro';
   const store = useIntroStore();
-  // const lenis = inject('lenis');
   const title = ref(null);
   const props = defineProps({
     filterOpacity: {
@@ -34,7 +35,6 @@
   });
   let page_title;
   onMounted(() => {
-    // console.log(lenis.lenis.value);
     // let tl = gsap.timeline();
     // tl.to('animation-element', {
     //   x: 800

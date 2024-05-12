@@ -3,35 +3,21 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import Lenis from "@studio-freight/lenis";
 
-export const useLenis = () => {
+export const useLenis = (opt) => {
     const lenis = ref(null);
     onMounted(() => {
-        gsap.registerPlugin(ScrollTrigger)
-        // паралакс
-        // const sections = gsap.utils.toArray('.page-videos .video');
-        //
-        // sections.forEach((block, index) => {
-        //     gsap.to(block, {
-        //         y: 0,
-        //         duration: 0.7,
-        //         scrollTrigger: {
-        //             trigger: block,
-        //             start: 'top 70%',
-        //             scrub: true,
-        //             end: 'bottom center',
-        //             markers: true,
-        //         }
-        //     });
-        // });
+        // gsap.registerPlugin(ScrollTrigger)
 
-        lenis.value = new Lenis();
-        lenis.value.on('scroll', ScrollTrigger.update)
+        lenis.value = new Lenis({
+            wrapper: opt.wrapper,
+        });
+        // lenis.value.on('scroll', ScrollTrigger.update)
         lenis.value.options.syncTouch = true;
-        gsap.ticker.add((time) => {
-            lenis.value.raf(time * 1000)
-        })
-
-        gsap.ticker.lagSmoothing(0)
+        // gsap.ticker.add((time) => {
+        //     lenis.value.raf(time * 1000)
+        // })
+        //
+        // gsap.ticker.lagSmoothing(0)
     })
 
     onUnmounted(() => {

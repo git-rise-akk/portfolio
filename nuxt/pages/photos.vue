@@ -1,6 +1,5 @@
 <template>
-  <div class="page photos" :class="{mobile: !$device.isDesktop}">
-    <div class="rullers"></div>
+  <div ref="root" class="page photos" :class="{mobile: !$device.isDesktop}">
     <template-page
         :filterOpacity="0.55"
         :bgImage="imageSrc"
@@ -37,12 +36,14 @@
 
 <script setup>
   import { changesCursorState } from '@/stores/Cursor';
+  import Lenis from "@studio-freight/lenis";
+  import gsap from "gsap";
   const store = changesCursorState();
   const config = useRuntimeConfig();
-  const lenis = inject('lenis');
   const openPopup = ref(false);
   const photosGallery= ref([]);
   const album = ref(null);
+  const root = ref(null);
   const { data: photosData } = await useFetch(`${config.public.API_URL}/api/foto?populate=*`);
   const { data: albumData } = await useFetch(`${config.public.API_URL}/api/foto?populate[albums][populate]=*`);
   const imageSrc = computed(() => {
@@ -71,6 +72,18 @@
   };
 
   onMounted(() => {
+    const lenis = new Lenis({
+      wrapper: root.value,
+      content: root.value.querySelector('.scroll-content')
+    });
+
+    function raf(time) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+
+    requestAnimationFrame(raf)
+
     const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
@@ -88,9 +101,6 @@
     if (album.value) {
       album.value.forEach((el) => observer.observe(el))
     }
-
-    lenis.lenis.value.resize();
-
   });
 </script>
 

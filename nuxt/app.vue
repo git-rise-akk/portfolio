@@ -20,9 +20,7 @@
   left: 8.3rem;
 }
 </style>
+
 <script setup>
-import CustomCursor from "@/components/CustomCursor.vue";
-import { useLenis } from '@/mixins/lenis.js';
-const lenis = useLenis();
-provide('lenis', lenis)
+  import CustomCursor from "@/components/CustomCursor.vue";
 </script>

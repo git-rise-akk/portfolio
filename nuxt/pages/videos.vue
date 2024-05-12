@@ -1,5 +1,5 @@
 <template>
-  <div class="page page-videos" :class="{mobile: !$device.isDesktop}">
+  <div ref="root" class="page page-videos" :class="{mobile: !$device.isDesktop}">
     <template-page
         :filterOpacity="0.1"
         :bg-video="[createsPathBackground('video'), createsPathBackground('image')]"
@@ -48,6 +48,7 @@
 
 <script setup>
 import { changesCursorState } from '@/stores/Cursor';
+import Lenis from "@studio-freight/lenis";
 const { isDesktop } = useDevice();
 const store = changesCursorState();
 const video = ref(null);
@@ -57,7 +58,7 @@ const linkVideo = ref('');
 const previewVideoPopup = ref('');
 const config = useRuntimeConfig();
 const openPopup = ref(false);
-const lenis = inject('lenis');
+const root = ref(null);
 const { data: backgroundData } = await useFetch(`${config.public.API_URL}/api/video?populate[backgroundVideo][populate]=*`);
 const { data: videosData } = await useFetch(`${config.public.API_URL}/api/video?populate[videos][populate]=*`);
 
@@ -101,6 +102,18 @@ const evenOpenPopup = (index) => {
 }
 
 onMounted(() => {
+  const lenis = new Lenis({
+    wrapper: root.value,
+    content: root.value.querySelector('.scroll-content')
+  });
+
+  function raf(time) {
+    lenis.raf(time)
+    requestAnimationFrame(raf)
+  }
+
+  requestAnimationFrame(raf)
+
   const tag = document.createElement('script');
   tag.src = "https://www.youtube.com/iframe_api";
   const firstScriptTag = document.getElementsByTagName('script')[0];
@@ -123,7 +136,7 @@ onMounted(() => {
     video.value.forEach((el) => observer.observe(el))
   }
 
-  lenis.lenis.value.resize();
+  // lenis.lenis.value.resize();
 });
 </script>
 

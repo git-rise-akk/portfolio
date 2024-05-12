@@ -1,58 +1,60 @@
 <template>
-  <div class="page home">
+  <div ref="root" class="page home" :class="{mobile: !$device.isDesktop}">
     <intro
         v-if="!store.hideIntro"
         :video-loaded="videoLoaded"
         @playVideo="callbackEndIntro"
     />
-    <section
-      class="section section--home"
-      @mouseenter="updateCursorState('CustomCursor--big', 'звук')"
-      @click="switchesSound()"
-    >
-      <div class="filter"></div>
-      <video ref="video" :class="['video', {'video--animation': step === 1}]" :src="srcVideo" poster="/images/home/preview_video.jpg" playsinline loop muted :autoplay="store.hideIntro"></video>
-      <div
-        class="sound_wrapper"
-        :class="{active: soundOn}"
-      >
-        <div class="line"></div>
-        <nuxt-icon name="sound" filled />
-      </div>
-      <div class="scroll-down_wrapper">
-        <nuxt-icon name="scroll" filled />
-      </div>
-    </section>
-    <transition name="fake">
+    <div class="scroll-content">
       <section
-          ref="sectionAbout"
-          class="section section--about"
-          v-show="step === 1"
-          @mouseenter="updateCursorState('', '')"
+          class="section section--home"
+          @mouseenter="updateCursorState('CustomCursor--big', 'звук')"
+          @click="switchesSound()"
       >
-        <div class="filter-about"></div>
-        <h1 ref="title" class="title">Обо мне</h1>
-        <div :class="['content', {'content--active': animationImg}]">
-          <div class="content__left" v-html="formattedText(homeData.data.attributes.aboutText)"></div>
-          <div class="content__right">
-            <div class="about-images-one">
-              <img :src="createsPathImage(0)" alt="photo">
-            </div>
-            <div class="about-images-two">
-              <img :src="createsPathImage(1)" alt="photo">
-            </div>
-          </div>
+        <div class="filter"></div>
+        <video ref="video" :class="['video', {'video--animation': step === 1}]" :src="srcVideo" poster="/images/home/preview_video.jpg" playsinline loop muted :autoplay="store.hideIntro"></video>
+        <div
+            class="sound_wrapper"
+            :class="{active: soundOn}"
+        >
+          <div class="line"></div>
+          <nuxt-icon name="sound" filled />
+        </div>
+        <div class="scroll-down_wrapper">
+          <nuxt-icon name="scroll" filled />
         </div>
       </section>
-    </transition>
+      <transition name="fake">
+        <section
+            ref="sectionAbout"
+            class="section section--about"
+            v-show="step === 1"
+            @mouseenter="updateCursorState('', '')"
+        >
+          <div class="filter-about"></div>
+          <h1 ref="title" class="title">Обо мне</h1>
+          <div :class="['content', {'content--active': animationImg}]">
+            <div class="content__left" v-html="formattedText(homeData.data.attributes.aboutText)"></div>
+            <div class="content__right">
+              <div class="about-images-one">
+                <img :src="createsPathImage(0)" alt="photo">
+              </div>
+              <div class="about-images-two">
+                <img :src="createsPathImage(1)" alt="photo">
+              </div>
+            </div>
+          </div>
+        </section>
+      </transition>
+    </div>
   </div>
 </template>
 
 <script setup>
+  import Lenis from "@studio-freight/lenis";
   import { useIntroStore } from '@/stores/intro';
   import { changesCursorState } from '@/stores/Cursor';
   import { toggleLetters } from '@/mixins/globalMixin.js';
-  const lenis = inject('lenis');
   const store = useIntroStore();
   const storeCursor = changesCursorState();
   const config = useRuntimeConfig();
@@ -66,7 +68,9 @@
   const step = ref(0);
   const title = ref(null);
   const animationImg = ref(false);
-  const router = useRouter()
+  const router = useRouter();
+  const root = ref(null);
+  let lenis;
 
   function canplayEvent() {
       videoLoaded.value = true;
@@ -81,20 +85,20 @@
   }
 
   const changesStep = (direction) => {
-    if (lenis.lenis.value.animatedScroll > 0 && direction === 1) {
+    if (lenis?.animatedScroll > 0 && direction === 1) {
       step.value = 1;
     } else
-    if( lenis.lenis.value.animatedScroll === 0 && direction === -1) {
+    if( lenis?.animatedScroll === 0 && direction === -1) {
       step.value = 2;
     }
   }
 
   watch(() => step.value, (newStep, oldStep) => {
     if (newStep === 1) {
-      lenis.lenis.value.stop();
+      lenis.stop();
       setTimeout(() => {
-        lenis.lenis.value.start();
-        lenis.lenis.value.resize();
+        lenis.start();
+        lenis.resize();
       }, 1000);
       setTimeout(() => { page_title?.toggle(true); }, 500);
       setTimeout(() => { animationImg.value = true; }, 0);
@@ -107,11 +111,23 @@
   });
   let page_title;
   onMounted(() => {
-    lenis.lenis.value.start();
+    lenis = new Lenis({
+      wrapper: root.value,
+      content: root.value.querySelector('.scroll-content')
+    })
+
+    function raf(time) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+
+    requestAnimationFrame(raf)
+
+    lenis.start();
     video.value.addEventListener('canplay', canplayEvent());
     srcVideo.value = '/video/index.mp4';
-    lenis.lenis.value.on('scroll', () => {
-      changesStep(lenis.lenis.value.direction);
+    lenis.on('scroll', () => {
+      changesStep(lenis.direction);
     });
     if (router.currentRoute.value.query.section === 'about') {
       step.value = 1;
@@ -156,7 +172,10 @@
 
 <style lang="scss">
 .home {
-  height: calc(100vh + 2px);
+  .scroll-content {
+    width: 100%;
+    height: calc(100vh + 2px);
+  }
   .fake-enter-active,
   .fake-leave-active {
     transition: transform 1.5s cubic-bezier(0.33, 1, 0.68, 1);
@@ -187,12 +206,6 @@
       left: 0;
       height: 100vh;
       z-index: 1;
-    }
-    &.section--fake {
-      position: absolute;
-      height: 101vh;
-      width: 100%;
-      z-index: 2;
     }
     .sound_wrapper {
       position: absolute;
@@ -320,6 +333,49 @@
       }
       img {
         width: 10rem;
+      }
+    }
+  }
+  &.mobile {
+    .section--about {
+      .content {
+        margin: 0 8.3rem 0 8.3rem;
+        font-size: 4rem;
+        flex-direction: column-reverse;
+        align-items: center;
+        text-align: center;
+        &__left {
+          width: 100%;
+          margin-top: 13rem;
+        }
+        &__right {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          .about-images-one {
+            display: none;
+          }
+          .about-images-two {
+            position: relative;
+            top: initial;
+            left: initial;
+          }
+        }
+      }
+    }
+    .sound_wrapper {
+      width: 4rem;
+      height: 4rem;
+      .nuxt-icon {
+        font-size: 4rem;
+      }
+      .line {
+        width: 6.5rem;
+      }
+    }
+    .scroll-down_wrapper {
+      svg {
+        font-size: 6rem;
       }
     }
   }
