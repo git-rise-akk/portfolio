@@ -2,7 +2,7 @@
   <div ref="root" class="page home" :class="{mobile: !$device.isDesktop}">
     <intro
         v-if="!store.hideIntro"
-        :video-loaded="videoLoaded"
+        :video-loaded="videoLoaded"npm i nuxt-icons
         @playVideo="callbackEndIntro"
     />
     <div class="scroll-content">

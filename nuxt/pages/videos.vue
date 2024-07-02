@@ -165,9 +165,9 @@ onMounted(() => {
         cursor: pointer;
         opacity: 0;
         transition: 0.8s opacity linear;
-        animation: offset ease;
-        animation-timeline: view(block);
-        animation-range: cover 0% cover 100%;
+        //animation: offset ease;
+        //animation-timeline: view(block);
+        //animation-range: cover 0% cover 100%;
         &:first-child {
           transition: 0.8s opacity linear .6s;
           .preview,

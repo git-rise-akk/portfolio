@@ -16,6 +16,7 @@ html,
 body {
   font-size: calc(var(--index) * 5);
   font-family: 'Gilroy-Regular', Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
   color: #fff;
   background-color: $main;
   overflow: hidden;

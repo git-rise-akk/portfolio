@@ -1,5 +1,5 @@
 <template>
-  <div class="page page-test" :class="{mobile: !$device.isDesktop}">
+  <div ref="root" class="page page-test" :class="{mobile: !$device.isDesktop}">
     <template-page
         :filterOpacity="0.1"
         :titlePage="'TEST'"
@@ -20,9 +20,8 @@
 <script setup>
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-const lenis = inject('lenis');
-const main = ref();
-let ctx;
+import Lenis from "@studio-freight/lenis";
+const root = ref(null);
 const blocks = {
   1: 'Block 1',
   2: 'Block 2',
@@ -34,24 +33,37 @@ const blocks = {
   8: 'Block 8',
 };
 const block = ref(null);
-gsap.registerPlugin(ScrollTrigger);
 onMounted(() => {
-  ctx = gsap.context(() => {
-    const sections = gsap.utils.toArray('.block');
-    sections.forEach((block, index) => {
-      gsap.to(block, {
-        y: 0,
-        duration: 0.7,
-        scrollTrigger: {
-          trigger: block,
-          start: 'top 70%',
-          scrub: true,
-          end: 'bottom center',
-          markers: true,
-        }
-      });
+  const lenis = new Lenis({
+    wrapper: root.value,
+    content: root.value.querySelector('.scroll-content')
+  });
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  lenis.on('scroll', ScrollTrigger.update);
+
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+
+  gsap.ticker.lagSmoothing(0);
+
+  const sections = gsap.utils.toArray('.block');
+  sections.forEach((block, index) => {
+    gsap.to(block, {
+      y: '40%',
+      duration: 0.2,
+      scrollTrigger: {
+        trigger: block,
+        start: 'top 90%',
+        scroller: '.page.page-test',
+        scrub: true,
+        end: 'bottom top',
+        markers: true,
+      }
     });
-  }, main.value);
+  });
   const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -108,7 +120,7 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
     //opacity: 0;
-    transform: translateY(50%);
+    //transform: translateY(0%);
     //transition: 0.8s transform linear, 0.8s opacity linear;
     transition: 0.3s transform linear;
     //&--left {
